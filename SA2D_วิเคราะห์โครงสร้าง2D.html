@@ -101,13 +101,31 @@ table.sheet input:focus{outline:1px solid var(--acc); background:#f0f6ff;}
 /* ---------- modal dialog ---------- */
 #dlgOv{position:fixed; inset:0; z-index:100; background:rgba(20,25,40,.38); display:none; align-items:center; justify-content:center;}
 #dlgOv.show{display:flex;}
-#dlg{background:#fff; border:1px solid var(--bord); border-radius:8px; min-width:320px; max-width:440px; box-shadow:0 12px 40px rgba(0,0,0,.3);}
-#dlgTitle{padding:9px 14px; font-weight:700; color:#fff; background:linear-gradient(#3f7fe0,#1e62d0); border-radius:8px 8px 0 0; font-size:13px;}
-#dlgBody{padding:12px 16px;}
+#dlg{background:#fff; border:1px solid var(--bord); border-radius:8px; min-width:300px; min-height:140px; max-width:96vw; max-height:94vh; width:420px; box-shadow:0 12px 40px rgba(0,0,0,.3); display:flex; flex-direction:column; resize:both; overflow:hidden;}
+#dlgTitle{padding:9px 14px; font-weight:700; color:#fff; background:linear-gradient(#3f7fe0,#1e62d0); border-radius:8px 8px 0 0; font-size:13px; cursor:move; user-select:none; flex:0 0 auto;}
+#dlgTitle::after{content:'  ⠿'; float:right; opacity:.7; font-weight:400;}
+#dlgBtns{flex:0 0 auto;}
+#dlg::after{content:''; position:absolute; right:2px; bottom:2px; width:14px; height:14px; pointer-events:none; background:linear-gradient(135deg,transparent 50%,#9aa0ad 50%); border-radius:0 0 6px 0; opacity:.7;}
+#dlg{position:relative;}
+#dlgBody{padding:12px 16px; flex:1 1 auto; overflow:auto;}
 #dlgBody .prow label{flex:0 0 110px;}
 #dlgBtns{display:flex; justify-content:flex-end; gap:8px; padding:10px 14px; border-top:1px solid var(--bord); background:var(--panel2); border-radius:0 0 8px 8px;}
-#dlg.wide{max-width:760px; min-width:min(740px,95vw);}
-#dlg #dlgBody{max-height:82vh; overflow:auto;}
+#dlg.wide{width:min(760px,95vw);}
+.dgp{flex:1; min-width:70px; padding:5px 2px 3px; border:1px solid var(--bord); border-radius:5px; background:linear-gradient(#fff,#eef0f4); cursor:pointer; text-align:center; font-size:10.5px; color:var(--dim); line-height:1.2;}
+.dgp b{display:block; font-size:16px; letter-spacing:1px; color:#2c3444; font-weight:400;}
+.dgp:hover{border-color:var(--acc); background:var(--accsoft);}
+.dgp.active{border-color:var(--acc); background:var(--accsoft); color:var(--acc); box-shadow:inset 0 1px 3px rgba(30,98,208,.3);}
+.dgp.active b{color:var(--acc);}
+.rowdel{width:26px; height:22px; border:1px solid var(--bord); background:linear-gradient(#fff,#f5e8e8); border-radius:3px; cursor:pointer; font-size:11px; padding:0;}
+.rowdel:hover{background:#fbdada; border-color:#b3261e;}
+#wtGal{display:grid; grid-template-columns:repeat(auto-fill,minmax(112px,1fr)); gap:4px; margin:4px 0 8px; max-height:255px; overflow-y:auto; border:1px solid var(--bord); border-radius:4px; padding:5px; background:#fafbfd;}
+.ttile{border:1px solid var(--bord); border-radius:4px; background:#fff; cursor:pointer; text-align:center; padding:3px 2px 2px;}
+.ttile div{font:600 9.5px 'Segoe UI'; color:#333; margin-top:1px;}
+.ttile:hover{border-color:var(--acc);}
+.ttile.active{background:#fff59a; border-color:#c9a800;}
+#pmBtn.pmon{background:#fff59a; border-color:#c9a800; font-weight:700;}
+.stpb,.lcadd{width:20px; height:22px; border:1px solid var(--bord); background:linear-gradient(#fff,#e8eaee); border-radius:3px; cursor:pointer; font-size:12px; margin-left:2px; padding:0; vertical-align:middle; color:#0a7a2f; font-weight:700;}
+.stpb:hover,.lcadd:hover{background:var(--accsoft); border-color:var(--acc);}
 /* ---------- SAP2000-style menubar & icon toolbar ---------- */
 #menubar{display:flex; align-items:center; gap:0; padding:2px 8px 0; background:#f6f7f9; border-bottom:1px solid var(--bord);}
 #menubar #logo{margin-right:10px;}
@@ -133,7 +151,9 @@ table.sheet input:focus{outline:1px solid var(--acc); background:#f0f6ff;}
       <div class="dropdown" id="fileMenu">
         <div class="mi" data-mi2="new">🗋 ใหม่ (New)</div>
         <div class="mi" data-mi2="open">📂 เปิด (Open)…</div>
+        <div class="mi" data-mi2="dxfImp">⤵ นำเข้าไฟล์ DXF (Insert)…</div>
         <div class="mi" data-mi2="saveM">💾 บันทึก (Save)</div>
+        <div class="mi" data-mi2="xlExport">📊 ส่งออกผลเป็น Excel (.xls)…</div>
         <div class="mi" data-mi2="printv">🖨 พิมพ์หน้าปัจจุบัน (Print)…</div>
         <div class="msep"></div>
         <div class="mi" data-mi2="wizard">🧙 Structure Wizard (สร้างโครงสร้างอัตโนมัติ)…</div>
@@ -190,6 +210,7 @@ table.sheet input:focus{outline:1px solid var(--acc); background:#f0f6ff;}
         <div class="mi" data-mi2="defLc">Load Patterns…</div>
         <div class="mi" data-mi2="defCase">Load Cases…</div>
         <div class="mi" data-mi2="defCombo">Load Combinations…</div>
+        <div class="mi" data-mi2="defEnv">⛶ Envelope (เลือกชุดรวมแรง)…</div>
         <div class="msep"></div>
         <div class="mi" data-mi2="swToggle" id="miSW">รวมน้ำหนักตัวเอง (Self Weight)</div>
       </div>
@@ -286,6 +307,8 @@ table.sheet input:focus{outline:1px solid var(--acc); background:#f0f6ff;}
     <div id="palette"></div>
     <div id="center">
       <div id="canvasWrap">
+        <button id="pmBtn" class="tbtn" style="position:absolute;top:8px;right:16px;z-index:30;display:none">🗔 แสดงหลายค่า ▾</button>
+        <div id="pmPanel" class="dropdown" style="position:absolute;top:38px;right:16px;z-index:31;display:none;min-width:235px;padding:9px"></div>
         <canvas id="cv"></canvas>
         <div id="hint"></div>
         <div id="deflCtl">โก่งตัว ×<input type="range" id="deflScale" min="1" max="100" value="40" style="width:110px"><span id="deflScaleV"></span></div>
@@ -302,6 +325,7 @@ table.sheet input:focus{outline:1px solid var(--acc); background:#f0f6ff;}
   </div>
 </div>
 <input type="file" id="fileInp" accept=".json,.sa2d" hidden>
+<div id="ctxMenu" class="dropdown" style="position:fixed; display:none; z-index:120; min-width:235px;"></div>
 <div id="dlgOv">
   <div id="dlg">
     <div id="dlgTitle"></div>
@@ -413,6 +437,12 @@ function localLoads(model, mem, L, c, s){
     } else if(ld.kind==='trap'){
       const [px1,py1]=dec(ld.val,ld.dir), [px2,py2]=dec(ld.val2!==undefined?ld.val2:ld.val,ld.dir);
       out.px1+=px1; out.px2+=px2; out.py1+=py1; out.py2+=py2;
+    } else if(ld.kind==='pudl'){
+      const [px,py]=dec(ld.val,ld.dir);
+      let x1=Math.min(Math.max(ld.a||0,0),L);
+      let x2=Math.min(Math.max(ld.a2!==undefined?ld.a2:L,0),L);
+      if(x2<x1){ const t=x1; x1=x2; x2=t; }
+      if(x2-x1>1e-9) (out.puds=out.puds||[]).push({x1,x2,px,py});
     } else {
       const [Px,Py]=dec(ld.val,ld.dir);
       const a=Math.min(Math.max(ld.a,0),L);
@@ -431,6 +461,20 @@ function fefVector(ll, L){
   f[1]+= -pyu*L/2 - pyt*3*L/20; f[4]+= -pyu*L/2 - pyt*7*L/20;
   f[2]+= -pyu*L*L/12 - pyt*L*L/30;
   f[5]+=  pyu*L*L/12 + pyt*L*L/20;
+  // partial uniform loads [x1,x2] — exact closed-form fixed-end forces
+  for(const q of (ll.puds||[])){
+    const x1=q.x1, x2=q.x2, D=x2-x1;
+    const axi=q.px*(D-(x2*x2-x1*x1)/(2*L));
+    f[0]+=-axi; f[3]+=-(q.px*D-axi);
+    const I1=a=>L*L*a*a/2 - 2*L*a*a*a/3 + a*a*a*a/4;
+    const I2=a=>L*a*a*a/3 - a*a*a*a/4;
+    const IV=a=>L*L*L*a - L*a*a*a + a*a*a*a/2;
+    const Mi=q.py/(L*L)*(I1(x2)-I1(x1));
+    const Mj=q.py/(L*L)*(I2(x2)-I2(x1));
+    const Vi=q.py/(L*L*L)*(IV(x2)-IV(x1));
+    f[1]+=-Vi; f[4]+=-(q.py*D-Vi);
+    f[2]+=-Mi; f[5]+= Mj;
+  }
   // points
   for(const p of ll.points){
     const a=p.a, b=L-a;
@@ -574,8 +618,14 @@ function analyzeModel(model){
     const xs=[],Ns=[],Vs=[],Ms=[],dxs=[],dys=[];
     // include exact positions of point loads in samples
     const xset=[]; for(let i=0;i<NP;i++) xset.push(L*i/(NP-1));
-    const _pl=(model._allMemberLoads||model.memberLoads).filter(q=>q.member===m.id&&q.kind==='point');
-    for(const p of _pl){ const pa=Math.min(Math.max(p.a,0),L); xset.push(Math.max(0,pa-1e-6), Math.min(L,pa+1e-6)); }
+    const _all=(model._allMemberLoads||model.memberLoads).filter(q=>q.member===m.id);
+    for(const p of _all){
+      if(p.kind==='point'){ const pa=Math.min(Math.max(p.a,0),L); xset.push(Math.max(0,pa-1e-6), Math.min(L,pa+1e-6)); }
+      else if(p.kind==='pudl'){
+        const b1=Math.min(Math.max(p.a||0,0),L), b2=Math.min(Math.max(p.a2!==undefined?p.a2:L,0),L);
+        xset.push(b1,b2);
+      }
+    }
     xset.sort((a,b)=>a-b);
     const EIv=e.sec.E*e.sec.I;
     for(const x of xset){
@@ -584,12 +634,18 @@ function analyzeModel(model){
       let V=fL[1]+ll.py1*x+dpy*x*x/(2*L);
       let M=fL[1]*x - fL[2] + ll.py1*x*x/2 + dpy*x*x*x/(6*L);
       for(const p of ll.points){ if(p.a<x){ N-=p.Px; V+=p.Py; M+=p.Py*(x-p.a); } }
+      for(const q of (ll.puds||[])){
+        const xe=Math.min(x,q.x2);
+        if(xe>q.x1){ const len=xe-q.x1;
+          N-=q.px*len; V+=q.py*len; M+=q.py*len*(x-(q.x1+xe)/2); }
+      }
       // deflection: axial linear + Hermite + uniform-load particular
       const xi=x/L;
       const ax=(1-xi)*uL[0]+xi*uL[3];
       const h1=1-3*xi*xi+2*xi**3, h2=L*xi*(1-xi)*(1-xi), h3=3*xi*xi-2*xi**3, h4=L*(xi**3-xi*xi);
       let vy=h1*uL[1]+h2*uL[2]+h3*uL[4]+h4*uL[5];
-      const pyAvg=(ll.py1+ll.py2)/2;
+      let pyAvg=(ll.py1+ll.py2)/2;
+      for(const q of (ll.puds||[])) pyAvg+=q.py*(q.x2-q.x1)/L;
       if(EIv>1e-9 && Math.abs(pyAvg)>1e-12) vy+= pyAvg*x*x*(L-x)*(L-x)/(24*EIv);
       xs.push(x); Ns.push(N); Vs.push(V); Ms.push(M); dxs.push(ax); dys.push(vy);
       gmaxN=Math.max(gmaxN,Math.abs(N)); gmaxV=Math.max(gmaxV,Math.abs(V)); gmaxM=Math.max(gmaxM,Math.abs(M));
@@ -647,6 +703,7 @@ function comboResult(by, combo){
 }
 /* ================= END ENGINE (with combinations) ================= */
 
+var ENV_KEYS=['E:U','E:S','E:C'];
 /* ================= STATE / UNITS / UI PANELS ================= */
 const UNITS={
   kN:   {F:1,           Lm:1,  fname:'kN',  mname:'kN·m',  wname:'kN/m',  ename:'MPa', eF:1000},
@@ -713,6 +770,13 @@ function sectionCalc(s){
   else if(s.shape==='ibuilt'){ const H=s.hw+2*s.tf;
     s.A=2*s.bf*s.tf+s.hw*s.tw;
     s.I=(s.bf*Math.pow(H,3)-(s.bf-s.tw)*Math.pow(s.hw,3))/12; }
+  else if(s.shape==='box'){ const bi=Math.max(0,s.b-2*s.t), hi=Math.max(0,s.h-2*s.t);
+    s.A=s.b*s.h-bi*hi;
+    s.I=(s.b*Math.pow(s.h,3)-bi*Math.pow(hi,3))/12; }
+  else if(s.shape==='angle'){ const b=s.b, t=s.t;
+    const c=(b*b+b*t-t*t)/(2*(2*b-t));
+    s.A=t*(2*b-t);
+    s.I=(t*Math.pow(b-c,3)+b*Math.pow(c,3)-(b-t)*Math.pow(c-t,3))/3; }
 }
 /* backward compat for old saved files */
 function upgradeModel(md){
@@ -883,6 +947,14 @@ function divideSelected(nseg){
     model.memberLoads=model.memberLoads.filter(l=>l.member!==mid);
     for(const l of lds){
       if(l.kind==='udl'){ for(const nid2 of newIds) model.memberLoads.push({...l, id:model.nl++, member:nid2}); }
+      else if(l.kind==='pudl'){
+        const w2v=l.a2!==undefined?l.a2:L;
+        for(let k2=0;k2<newIds.length;k2++){
+          const sa=k2*L/nseg, sb=(k2+1)*L/nseg;
+          const o1=Math.max(l.a||0,sa), o2=Math.min(w2v,sb);
+          if(o2-o1>1e-9) model.memberLoads.push({...l, id:model.nl++, member:newIds[k2], a:o1-sa, a2:o2-sa});
+        }
+      }
       else if(l.kind==='trap'){
         const w2v=l.val2!==undefined?l.val2:l.val;
         for(let k2=0;k2<newIds.length;k2++){
@@ -921,7 +993,7 @@ function joinSelected(){
     const rev=(mem===A)?(mem.ni!==oa):(mem.ni!==shared);
     for(const l of model.memberLoads.filter(l=>l.member===mem.id)){
       const flipLY=rev&&l.dir==='LY';
-      if(l.kind==='trap'){ droppedUdl=true; continue; }
+      if(l.kind==='trap'||l.kind==='pudl'){ droppedUdl=true; continue; }
       if(l.kind==='udl'){
         const key=l.dir+'|'+(flipLY?-l.val:l.val);
         udls[key]=udls[key]||{dir:l.dir,val:flipLY?-l.val:l.val,cover:0};
@@ -1080,7 +1152,9 @@ function renderProps(){
       h+='<h3>แรงแผ่สม่ำเสมอ (UDL)</h3>';
       h+='<div class="prow"><label>w ('+u.wname+')</label><input type="number" id="pW" value="'+dW(ui.mlf.val)+'" step="1"></div>';
       h+='<div class="prow"><label>ทิศทาง</label><select id="pDir"><option value="GY"'+(ui.mlf.dir==='GY'?' selected':'')+'>Global Y (ดิ่ง)</option><option value="GX"'+(ui.mlf.dir==='GX'?' selected':'')+'>Global X (ราบ)</option><option value="LY"'+(ui.mlf.dir==='LY'?' selected':'')+'>Local y (ตั้งฉาก member)</option></select></div>';
-      h+='<div class="pnote">แรงกดลงใช้ค่าลบ เช่น w = −10<br>คลิก Member เพื่อวางแรง</div>';
+      h+='<div class="prow"><label>จาก x1 (m)</label><input type="number" id="pX1" value="'+(ui.mlf.x1!==undefined?ui.mlf.x1:'')+'" step="0.25" placeholder="ว่าง = 0"></div>';
+      h+='<div class="prow"><label>ถึง x2 (m)</label><input type="number" id="pX2" value="'+(ui.mlf.x2!==undefined?ui.mlf.x2:'')+'" step="0.25" placeholder="ว่าง = เต็มความยาว"></div>';
+      h+='<div class="pnote">แรงกดลงใช้ค่าลบ เช่น w = −10<br>กรอก x1/x2 เพื่อลงแรงเฉพาะช่วง (วัดจาก Node I) — เว้นว่าง = เต็มความยาว<br>คลิก Member เพื่อวางแรง</div>';
     } else if(ui.tool==='trapload'){
       h+='<h3>แรงแผ่ไม่สม่ำเสมอ (w1 → w2)</h3>';
       h+='<div class="prow"><label>w1 ปลาย I ('+u.wname+')</label><input type="number" id="pW1" value="'+dW(ui.mlf.val)+'" step="1"></div>';
@@ -1174,6 +1248,8 @@ function bindProps(){
   on('pW2','change',e=>ui.mlf.val2=iW(num(e.target)));
   on('pP','change',e=>ui.mlf.val=iF(num(e.target)));
   on('pDir','change',e=>ui.mlf.dir=e.target.value);
+  on('pX1','change',e=>{ const v=parseFloat(e.target.value); ui.mlf.x1=isFinite(v)?v:undefined; });
+  on('pX2','change',e=>{ const v=parseFloat(e.target.value); ui.mlf.x2=isFinite(v)?v:undefined; });
   on('pA','change',e=>ui.mlf.a=Math.max(0,num(e.target)));
   /* selection edits */
   on('selNx','change',e=>{ pushUndo(); const n=getNode(ui.selN[0]); n.x=num(e.target); invalidate(); });
@@ -1211,11 +1287,11 @@ function renderDataView(){
 
   h+='<h2 id="hSec">หน้าตัด (Sections)</h2><table class="sheet"><tr><th>ID</th><th>ชื่อ</th><th>วัสดุ</th><th>รูปทรง</th><th>b (cm)</th><th>h / D (cm)</th><th>A (cm²)</th><th>I (cm⁴)</th><th></th></tr>';
   for(const s of model.sections){
-    const shaped=s.shape==='rect'||s.shape==='circle'||s.shape==='ibuilt';
+    const shaped=['rect','circle','ibuilt','box','angle'].includes(s.shape);
     h+='<tr><td>'+s.id+'</td><td class="l"><input data-k="name" data-t="sec" data-id="'+s.id+'" type="text" value="'+s.name+'" style="width:120px;text-align:left"></td>'+
       '<td><select data-k="mat" data-t="sec" data-id="'+s.id+'">'+model.materials.map(mt=>'<option value="'+mt.id+'"'+(s.mat===mt.id?' selected':'')+'>'+mt.name+'</option>').join('')+'</select></td>'+
-      '<td><select data-k="shape" data-t="sec" data-id="'+s.id+'"><option value="general"'+(s.shape==='general'?' selected':'')+'>กำหนด A,I เอง</option><option value="rect"'+(s.shape==='rect'?' selected':'')+'>สี่เหลี่ยม b×h</option><option value="circle"'+(s.shape==='circle'?' selected':'')+'>วงกลม D</option><option value="ibuilt"'+(s.shape==='ibuilt'?' selected':'')+'>Built-up I (แผ่นประกอบ)</option></select></td>'+
-      '<td>'+(s.shape==='rect'?'<input data-k="b" data-t="sec" data-id="'+s.id+'" type="number" value="'+fmtRaw((s.b||0.25)*100)+'">':(s.shape==='ibuilt'?'<span class="delrow" style="color:var(--acc);font-weight:600" data-bu="'+s.id+'">แก้ไข…</span>':'—'))+'</td>'+
+      '<td><select data-k="shape" data-t="sec" data-id="'+s.id+'"><option value="general"'+(s.shape==='general'?' selected':'')+'>กำหนด A,I เอง</option><option value="rect"'+(s.shape==='rect'?' selected':'')+'>สี่เหลี่ยม b×h</option><option value="circle"'+(s.shape==='circle'?' selected':'')+'>วงกลม D</option><option value="ibuilt"'+(s.shape==='ibuilt'?' selected':'')+'>Built-up I (แผ่นประกอบ)</option><option value="box"'+(s.shape==='box'?' selected':'')+'>เหล็กกล่อง B×H×t</option><option value="angle"'+(s.shape==='angle'?' selected':'')+'>เหล็กฉาก L×t</option></select></td>'+
+      '<td>'+(s.shape==='rect'?'<input data-k="b" data-t="sec" data-id="'+s.id+'" type="number" value="'+fmtRaw((s.b||0.25)*100)+'">':(['ibuilt','box','angle'].includes(s.shape)?'<span class="delrow" style="color:var(--acc);font-weight:600" data-bu="'+s.id+'">แก้ไข…</span>':'—'))+'</td>'+
       '<td>'+(s.shape==='rect'?'<input data-k="h" data-t="sec" data-id="'+s.id+'" type="number" value="'+fmtRaw((s.h||0.5)*100)+'">':(s.shape==='circle'?'<input data-k="D" data-t="sec" data-id="'+s.id+'" type="number" value="'+fmtRaw((s.D||0.3)*100)+'">':'—'))+'</td>'+
       '<td>'+(shaped?fmt(s.A*1e4,1):'<input data-k="A" data-t="sec" data-id="'+s.id+'" type="number" value="'+fmtRaw(s.A*1e4)+'">')+'</td>'+
       '<td>'+(shaped?fmt(s.I*1e8,0):'<input data-k="I" data-t="sec" data-id="'+s.id+'" type="number" value="'+fmtRaw(s.I*1e8)+'">')+'</td>'+
@@ -1266,22 +1342,25 @@ function renderDataView(){
   h+='</table>';
 
   const lcSelHtml=(t,l)=>'<select data-k="lc" data-t="'+t+'" data-id="'+l.id+'">'+model.loadCases.map(c=>'<option value="'+c.id+'"'+((l.lc||model.loadCases[0].id)===c.id?' selected':'')+'>'+c.name+'</option>').join('')+'</select>';
-  h+='<h2>แรงกระทำที่ Node</h2><table class="sheet"><tr><th>Node</th><th>Load Case</th><th>Fx ('+u.fname+')</th><th>Fy ('+u.fname+')</th><th>Mz ('+u.mname+')</th><th></th></tr>';
+  h+='<h2>แรงกระทำที่ Node</h2><table class="sheet"><tr><th>Node</th><th>Load Case</th><th>Fx ('+u.fname+')</th><th>Fy ('+u.fname+')</th><th>Mz ('+u.mname+')</th><th>Note</th><th></th></tr>';
   for(const l of model.nodeLoads){
     h+='<tr><td>N'+l.node+'</td><td>'+lcSelHtml('nload',l)+'</td>'+
       '<td><input data-k="fx" data-t="nload" data-id="'+l.id+'" type="number" value="'+fmtRaw(dF(l.fx))+'"></td>'+
       '<td><input data-k="fy" data-t="nload" data-id="'+l.id+'" type="number" value="'+fmtRaw(dF(l.fy))+'"></td>'+
       '<td><input data-k="mz" data-t="nload" data-id="'+l.id+'" type="number" value="'+fmtRaw(dM(l.mz))+'"></td>'+
+      '<td><input data-k="note" data-t="nload" data-id="'+l.id+'" type="text" value="'+(l.note||'')+'" style="width:80px;text-align:left"></td>'+
       '<td><span class="delrow" data-del="nload" data-id="'+l.id+'">×</span></td></tr>';
   }
   h+='</table>';
 
-  h+='<h2>แรงกระทำบน Member</h2><table class="sheet"><tr><th>Member</th><th>Load Case</th><th>ชนิด</th><th>ทิศ</th><th>ค่า w1/P ('+u.fname+' หรือ '+u.wname+')</th><th>a (m) / w2</th><th></th></tr>';
+  h+='<h2>แรงกระทำบน Member</h2><table class="sheet"><tr><th>Member</th><th>Load Case</th><th>ชนิด</th><th>ทิศ</th><th>ค่า w1/P ('+u.fname+' หรือ '+u.wname+')</th><th>a/x1 (m) หรือ w2</th><th>x2 (m)</th><th>Note</th><th></th></tr>';
   for(const l of model.memberLoads){
-    h+='<tr><td>M'+l.member+'</td><td>'+lcSelHtml('mload',l)+'</td><td class="l">'+(l.kind==='udl'?'UDL':(l.kind==='trap'?'แผ่ w1→w2':'แรงจุด'))+'</td>'+
+    h+='<tr><td>M'+l.member+'</td><td>'+lcSelHtml('mload',l)+'</td><td class="l">'+(l.kind==='udl'?'UDL':(l.kind==='trap'?'แผ่ w1→w2':(l.kind==='pudl'?'แผ่ช่วง x1→x2':'แรงจุด')))+'</td>'+
       '<td><select data-k="dir" data-t="mload" data-id="'+l.id+'">'+['GY','GX','LY'].map(d=>'<option'+(l.dir===d?' selected':'')+'>'+d+'</option>').join('')+'</select></td>'+
       '<td><input data-k="val" data-t="mload" data-id="'+l.id+'" type="number" value="'+fmtRaw(l.kind==='point'?dF(l.val):dW(l.val))+'"></td>'+
-      '<td>'+(l.kind==='point'?'<input data-k="a" data-t="mload" data-id="'+l.id+'" type="number" value="'+l.a+'" step="0.25">':(l.kind==='trap'?'<input data-k="val2" data-t="mload" data-id="'+l.id+'" type="number" value="'+fmtRaw(dW(l.val2!==undefined?l.val2:l.val))+'">':'—'))+'</td>'+
+      '<td>'+((l.kind==='point'||l.kind==='pudl')?'<input data-k="a" data-t="mload" data-id="'+l.id+'" type="number" value="'+(l.a||0)+'" step="0.25">':(l.kind==='trap'?'<input data-k="val2" data-t="mload" data-id="'+l.id+'" type="number" value="'+fmtRaw(dW(l.val2!==undefined?l.val2:l.val))+'">':'—'))+'</td>'+
+      '<td>'+(l.kind==='pudl'?'<input data-k="a2" data-t="mload" data-id="'+l.id+'" type="number" value="'+(l.a2!==undefined?l.a2:0)+'" step="0.25">':'—')+'</td>'+
+      '<td><input data-k="note" data-t="mload" data-id="'+l.id+'" type="text" value="'+(l.note||'')+'" style="width:80px;text-align:left"></td>'+
       '<td><span class="delrow" data-del="mload" data-id="'+l.id+'">×</span></td></tr>';
   }
   h+='</table><div class="pnote" style="margin-top:14px">หมายเหตุ: ทิศ GY = แนวดิ่งโลก (ลบ = กดลง), GX = แนวราบโลก, LY = ตั้งฉากกับแกน member • หน่วยความยาวเป็นเมตรเสมอ</div>';
@@ -1309,6 +1388,8 @@ function bindDataView(){
           if(s.shape==='rect'){ s.b=s.b||0.25; s.h=s.h||0.5; }
           if(s.shape==='circle'){ s.D=s.D||0.3; }
           if(s.shape==='ibuilt'){ s.bf=s.bf||0.2; s.tf=s.tf||0.012; s.hw=s.hw||0.476; s.tw=s.tw||0.006; }
+          if(s.shape==='box'){ s.b=s.b||0.1; s.h=s.h||0.1; s.t=s.t||0.0032; }
+          if(s.shape==='angle'){ s.b=s.b||0.05; s.t=s.t||0.004; }
           sectionCalc(s);
         }
         else if(k==='b'){ s.b=Math.max(0.001,num(el)/100); sectionCalc(s); }
@@ -1328,9 +1409,9 @@ function bindDataView(){
         if(k==='name')cb.name=el.value;
         else { cb.factors=cb.factors||{}; cb.factors[+el.dataset.cid]=num(el); }
       }
-      else if(t==='nload'){ const l=model.nodeLoads.find(x=>x.id===id); if(k==='lc')l.lc=+el.value; else l[k]=(k==='mz'?iM(num(el)):iF(num(el))); }
+      else if(t==='nload'){ const l=model.nodeLoads.find(x=>x.id===id); if(k==='lc')l.lc=+el.value; else if(k==='note')l.note=el.value; else l[k]=(k==='mz'?iM(num(el)):iF(num(el))); }
       else if(t==='mload'){ const l=model.memberLoads.find(x=>x.id===id);
-        if(k==='a')l.a=Math.max(0,num(el)); else if(k==='dir')l.dir=el.value; else if(k==='lc')l.lc=+el.value; else if(k==='val2')l.val2=iW(num(el)); else l.val=(l.kind==='point'?iF(num(el)):iW(num(el)));
+        if(k==='a')l.a=Math.max(0,num(el)); else if(k==='a2')l.a2=Math.max(0,num(el)); else if(k==='note')l.note=el.value; else if(k==='dir')l.dir=el.value; else if(k==='lc')l.lc=+el.value; else if(k==='val2')l.val2=iW(num(el)); else l.val=(l.kind==='point'?iF(num(el)):iW(num(el)));
       }
       invalidate(); renderDataView();
     });
@@ -1400,6 +1481,7 @@ const C={mem:'#2b2f38', truss:'#5a3fb5', node:'#111', sel:'#ff8800', pend:'#0a9a
   N:'#c518c5', V:'#0a80d0', M:'#d02020', txt:'#333'};
 
 function draw(){
+  if(ui.win==='plot'&&ui.results&&ui.plotMulti&&ui.plotMulti.on&&!ui._pmBusy&&typeof drawPlotMulti==='function'){ drawPlotMulti(); return; }
   const w=cv.clientWidth, h=cv.clientHeight;
   ctx.clearRect(0,0,w,h);
   ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,w,h);
@@ -1581,7 +1663,23 @@ function drawLoads(full){
       const wx=-(b.y-a.y), wy=(b.x-a.x), wl=Math.hypot(wx,wy)||1;
       dx=Math.sign(l.val)*wx/wl; dy=-Math.sign(l.val)*wy/wl;
     }
-    if(l.kind==='trap'){
+    if(l.kind==='pudl'){
+      const Lw=memberLen(m);
+      const t1=Math.min(Math.max((l.a||0)/Lw,0),1), t2=Math.min(Math.max((l.a2!==undefined?l.a2:Lw)/Lw,0),1);
+      const ax1=x1+(x2-x1)*t1, ay1=y1+(y2-y1)*t1, ax2=x1+(x2-x1)*t2, ay2=y1+(y2-y1)*t2;
+      const len=24, LL2=Math.hypot(ax2-ax1,ay2-ay1), nA=Math.max(2,Math.floor(LL2/22)+1);
+      ctx.strokeStyle=C.loadN; ctx.lineWidth=1.3;
+      ctx.beginPath(); ctx.moveTo(ax1-dx*len,ay1-dy*len); ctx.lineTo(ax2-dx*len,ay2-dy*len); ctx.stroke();
+      for(let i=0;i<=nA;i++){
+        const t3=i/nA, px3=ax1+(ax2-ax1)*t3, py3=ay1+(ay2-ay1)*t3;
+        arrow(px3-dx*len,py3-dy*len,px3-dx*4,py3-dy*4,C.loadN,1.2);
+      }
+      if(full){
+        label((ax1+ax2)/2-dx*(len+12)-14,(ay1+ay2)/2-dy*(len+12),fmt(dW(Math.abs(l.val)))+' '+U().wname,C.loadN,10.5,true);
+        label((ax1+ax2)/2+4,(ay1+ay2)/2+14,'x='+fmt(l.a||0,2)+'–'+fmt(l.a2!==undefined?l.a2:memberLen(m),2)+' m',C.txt,9.5);
+      }
+    }
+    else if(l.kind==='trap'){
       const w2v=l.val2!==undefined?l.val2:l.val;
       const wmax=Math.max(Math.abs(l.val),Math.abs(w2v),1e-12);
       const nA=Math.max(3,Math.floor(L/26)+1);
@@ -1623,7 +1721,9 @@ function drawLoads(full){
 function drawResults(){
   const R=ui.results, u=U(), g=R.gmax;
   const diag=ui.plot.diag;
-  if(diag!=='none'){
+  if(diag!=='none'&&R.isEnv){
+    drawEnvDiagram(R,diag);
+  } else if(diag!=='none'){
     const key=diag, arrK=diag+'s', col=C[diag];
     const gm=g[diag]||1e-12;
     const sc=48/Math.max(gm,1e-12); // px per unit
@@ -1854,7 +1954,7 @@ let panning=null, downPt=null;
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('mousedown',e=>{
   const r=cv.getBoundingClientRect(), sx=e.clientX-r.left, sy=e.clientY-r.top;
-  if(e.button===1||e.button===2||e.shiftKey||ui.tool==='pan'){ panning={sx,sy,ox:ui.ox,oy:ui.oy}; return; }
+  if(e.button===1||e.button===2||e.shiftKey||ui.tool==='pan'){ panning={sx,sy,ox:ui.ox,oy:ui.oy,btn:e.button,cx:e.clientX,cy:e.clientY}; return; }
   downPt={sx,sy,ctrl:e.ctrlKey||e.metaKey};
   if(ui.tool==='select'&&(ui.win==='frame'||ui.win==='load')){
     const n=hitNode(sx,sy);
@@ -1882,7 +1982,12 @@ cv.addEventListener('mousemove',e=>{
 });
 cv.addEventListener('mouseleave',()=>{ if(ui.probe){ ui.probe=null; draw(); } });
 window.addEventListener('mouseup',e=>{
-  if(panning){ panning=null; return; }
+  if(panning){
+    const pn=panning; panning=null;
+    if(pn.btn===2&&Math.hypot(e.clientX-pn.cx,e.clientY-pn.cy)<4&&(ui.win==='frame'||ui.win==='load'||ui.win==='plot'))
+      setTimeout(()=>openCtxMenu(pn.cx,pn.cy),0);
+    return;
+  }
   const wasDrag=ui.drag&&ui.drag.moved;
   ui.drag=null;
   const r=cv.getBoundingClientRect(), sx=e.clientX-r.left, sy=e.clientY-r.top;
@@ -1893,11 +1998,12 @@ window.addEventListener('mouseup',e=>{
       const crossing=b.x1<b.x0;
       const x0=Math.min(b.x0,b.x1),x1=Math.max(b.x0,b.x1),y0=Math.min(b.y0,b.y1),y1=Math.max(b.y0,b.y1);
       if(!b.ctrl) clearSel();
+      const fB=ui.selFilter||'all';
       const inBox={};
       for(const n of model.nodes){
         const [px,py]=W2S(n.x,n.y);
         inBox[n.id]=(px>=x0&&px<=x1&&py>=y0&&py<=y1);
-        if(inBox[n.id]&&!ui.selN.includes(n.id)) ui.selN.push(n.id);
+        if(fB!=='member'&&inBox[n.id]&&!ui.selN.includes(n.id)) ui.selN.push(n.id);
       }
       for(const m of model.members){
         let hit;
@@ -1906,7 +2012,7 @@ window.addEventListener('mouseup',e=>{
           const [ax,ay]=W2S(a.x,a.y), [cx,cy]=W2S(c.x,c.y);
           hit=segRect(ax,ay,cx,cy,x0,y0,x1,y1);
         } else hit=inBox[m.ni]&&inBox[m.nj];
-        if(hit&&!ui.selM.includes(m.id)) ui.selM.push(m.id);
+        if(fB!=='node'&&hit&&!ui.selM.includes(m.id)) ui.selM.push(m.id);
       }
       renderProps(); draw(); downPt=null;
       setMsg((crossing?'Crossing':'Window')+' — เลือก '+ui.selN.length+' Node, '+ui.selM.length+' Member');
@@ -1938,8 +2044,11 @@ function handleClick(sx,sy,ctrl){
   if(win==='data'||win==='result') return;
   const n=hitNode(sx,sy), m=n?null:hitMember(sx,sy);
   if(t==='select'){ // SAP2000 style: click toggles selection (accumulative), empty click clears
-    if(n) toggleSel(ui.selN,n.id);
-    else if(m) toggleSel(ui.selM,m.id);
+    const f=ui.selFilter||'all';
+    let en=(f==='member')?null:n;
+    let em=(f==='node')?null:(en?null:(m||((f==='member'&&n)?hitMember(sx,sy):null)));
+    if(en) toggleSel(ui.selN,en.id);
+    else if(em) toggleSel(ui.selM,em.id);
     else if(!ctrl) clearSel();
     renderProps(); draw();
     if(selCount())setMsg('เลือกอยู่ '+ui.selN.length+' Node, '+ui.selM.length+' Member (คลิกซ้ำ = เอาออก)');
@@ -1967,8 +2076,16 @@ function handleClick(sx,sy,ctrl){
     }
     else if(t==='udlload'&&m){
       pushUndo();
-      model.memberLoads.push({id:model.nl++, member:m.id, kind:'udl', dir:ui.mlf.dir, val:ui.mlf.val, a:0, lc:ui.lc});
-      invalidate(); setMsg('เพิ่ม UDL บน M'+m.id+' [case: '+(getCase(ui.lc)||{}).name+']');
+      const Lm=memberLen(m);
+      const hasX=(ui.mlf.x1!==undefined&&ui.mlf.x2!==undefined&&ui.mlf.x2>ui.mlf.x1);
+      if(hasX){
+        model.memberLoads.push({id:model.nl++, member:m.id, kind:'pudl', dir:ui.mlf.dir, val:ui.mlf.val,
+          a:Math.min(Math.max(0,ui.mlf.x1),Lm), a2:Math.min(Math.max(0,ui.mlf.x2),Lm), lc:ui.lc});
+        invalidate(); setMsg('เพิ่มแรงแผ่ช่วง x1→x2 บน M'+m.id+' [case: '+(getCase(ui.lc)||{}).name+']');
+      } else {
+        model.memberLoads.push({id:model.nl++, member:m.id, kind:'udl', dir:ui.mlf.dir, val:ui.mlf.val, a:0, lc:ui.lc});
+        invalidate(); setMsg('เพิ่ม UDL บน M'+m.id+' [case: '+(getCase(ui.lc)||{}).name+']');
+      }
     }
     else if(t==='trapload'&&m){
       pushUndo();
@@ -2036,6 +2153,7 @@ function runAnalysis(){
     if(!r.ok&&!firstErr)firstErr=r.msg+' [case: '+c.name+']';
   }
   for(const cb of (model.loadCombos||[])) by['C'+cb.id]=comboResult(by,cb);
+  computeEnvelopes(by);
   if(firstErr&&Object.values(by).every(r=>!r.ok)){
     setMsg(firstErr,true); ui.results=null; ui.resultsByCase=null;
     $('modelStatus').textContent='วิเคราะห์ไม่สำเร็จ'; $('modelStatus').className='';
@@ -2064,9 +2182,11 @@ function renderLcSel(){
   let h='<optgroup label="Load Cases">'+model.loadCases.map(c=>'<option value="'+c.id+'"'+(String(ui.lc)===String(c.id)?' selected':'')+'>'+c.name+'</option>').join('')+'</optgroup>';
   if((model.loadCombos||[]).length)
     h+='<optgroup label="Load Combinations">'+model.loadCombos.map(c=>'<option value="C'+c.id+'"'+(ui.lc==='C'+c.id?' selected':'')+'>⧉ '+c.name+'</option>').join('')+'</optgroup>';
+  h+='<optgroup label="Envelope">'+ENV_KEYS.map(k=>'<option value="'+k+'"'+(ui.lc===k?' selected':'')+'>⛶ '+envName(k)+'</option>').join('')+'</optgroup>';
   s.innerHTML=h;
 }
 function caseName(key){
+  if(typeof key==='string'&&key[0]==='E')return envName(key);
   if(typeof key==='string'&&key[0]==='C'){
     const cb=(model.loadCombos||[]).find(c=>'C'+c.id===key);
     return cb?cb.name:key;
@@ -2111,28 +2231,29 @@ function renderResultsView(){
   const rv=$('resultView'); const u=U();
   const by=ui.resultsByCase;
   if(!by){ rv.innerHTML='<div class="pnote" style="font-size:13px">ยังไม่มีผลการวิเคราะห์ — กดปุ่ม <b>▶ วิเคราะห์</b> ที่แถบบน (จะคำนวณทุก Load Case และทุก Combination พร้อมกัน)</div>'; return; }
-  const keys=[...model.loadCases.map(c=>String(c.id)), ...(model.loadCombos||[]).map(c=>'C'+c.id)];
-  let h='<button class="tbtn" id="rvPrint" style="float:right">🖨 พิมพ์ผลทั้งหมด</button><h2>สรุปผลทุก Load Case / Load Combination</h2>';
+  const keys=[...model.loadCases.map(c=>String(c.id)), ...(model.loadCombos||[]).map(c=>'C'+c.id), ...ENV_KEYS.filter(k=>by[k]&&by[k].ok)];
+  let h='<button class="tbtn" id="rvPrint" style="float:right">🖨 พิมพ์ผลทั้งหมด</button><button class="tbtn" id="rvExcel" style="float:right;margin-right:6px">📊 ส่งออก Excel</button><h2>สรุปผลทุก Load Case / Load Combination</h2>';
   h+='<table class="sheet"><tr><th>ชื่อ</th><th>ชนิด</th><th>|N|<sub>max</sub> ('+u.fname+')</th><th>|V|<sub>max</sub> ('+u.fname+')</th><th>|M|<sub>max</sub> ('+u.mname+')</th><th>Δ<sub>max</sub> (mm)</th><th>สถานะ</th></tr>';
   for(const k of keys){
-    const R=by[k], isC=k[0]==='C';
+    const R=by[k], isC=k[0]==='C', isE=k[0]==='E';
     const cb=isC?(model.loadCombos||[]).find(c=>'C'+c.id===k):null;
     const nm='<b>'+caseName(k)+'</b>'+(cb?'<br><small style="color:var(--dim)">'+comboDesc(cb)+'</small>':'')+((!isC&&model.selfWeight&&model.swCase===+k)?'<br><small style="color:var(--dim)">+ น้ำหนักตัวเอง</small>':'');
     if(R&&R.ok)
-      h+='<tr><td class="l">'+nm+'</td><td class="l">'+(isC?'Combination':'Load Case')+'</td><td>'+fmt(dF(R.gmax.N))+'</td><td>'+fmt(dF(R.gmax.V))+'</td><td>'+fmt(dF(R.gmax.M))+'</td><td>'+fmt(R.gmax.D*1000,3)+'</td><td style="color:#0a7a2f">✔</td></tr>';
+      h+='<tr><td class="l">'+nm+'</td><td class="l">'+(isE?'Envelope':(isC?'Combination':'Load Case'))+'</td><td>'+fmt(dF(R.gmax.N))+'</td><td>'+fmt(dF(R.gmax.V))+'</td><td>'+fmt(dF(R.gmax.M))+'</td><td>'+fmt(R.gmax.D*1000,3)+'</td><td style="color:#0a7a2f">✔</td></tr>';
     else
-      h+='<tr><td class="l">'+nm+'</td><td class="l">'+(isC?'Combination':'Load Case')+'</td><td colspan="4">—</td><td style="color:#b3261e">'+(R?R.msg:'—')+'</td></tr>';
+      h+='<tr><td class="l">'+nm+'</td><td class="l">'+(isE?'Envelope':(isC?'Combination':'Load Case'))+'</td><td colspan="4">—</td><td style="color:#b3261e">'+(R?R.msg:'—')+'</td></tr>';
   }
   h+='</table>';
   for(const k of keys){
     const R=by[k]; if(!R||!R.ok) continue;
     h+='<details'+(String(ui.lc)===k?' open':'')+' style="margin:12px 0 4px">'+
-       '<summary style="cursor:pointer;font-weight:700;color:var(--acc);font-size:13.5px;padding:4px 0">'+(k[0]==='C'?'⧉ ':'▤ ')+caseName(k)+' — ผลละเอียด</summary>'+
-       buildResultTables(R)+'</details>';
+       '<summary style="cursor:pointer;font-weight:700;color:var(--acc);font-size:13.5px;padding:4px 0">'+(k[0]==='E'?'⛶ ':(k[0]==='C'?'⧉ ':'▤ '))+caseName(k)+' — ผลละเอียด</summary>'+
+       (R.isEnv?buildEnvTables(R):buildResultTables(R))+'</details>';
   }
   h+='<div class="pnote" style="margin-top:12px">อนุสัญญาเครื่องหมาย: Axial + = แรงดึง (tension) • Moment วาดด้านรับแรงดึง (sagging +) • มุม + = ทวนเข็มนาฬิกา • Combination = ผลรวมเชิงเส้นตามตัวคูณ (กำหนดที่ กำหนด → Load Combinations)</div>';
   rv.innerHTML=h;
   const pb=document.getElementById('rvPrint'); if(pb)pb.onclick=printResults;
+  const xb=document.getElementById('rvExcel'); if(xb)xb.onclick=()=>openExportExcelDlg();
 }
 
 /* ---------- examples ---------- */
@@ -2196,6 +2317,8 @@ function switchWin(w){
   if(w==='load'&&!['select','pan','nload','udlload','trapload','pload','delload'].includes(ui.tool)) ui.tool='select';
   document.querySelectorAll('.wintab').forEach(t=>t.classList.toggle('active',t.dataset.win===w));
   $('canvasWrap').style.display=(w==='data'||w==='result')?'none':'block';
+  const pb2=$('pmBtn'); if(pb2)pb2.style.display=(w==='plot')?'':'none';
+  const pp2=$('pmPanel'); if(pp2&&w!=='plot')pp2.style.display='none';
   $('dataView').classList.toggle('show',w==='data');
   $('resultView').classList.toggle('show',w==='result');
   if(w==='data')renderDataView();
@@ -2203,13 +2326,13 @@ function switchWin(w){
   renderPalette(); renderProps(); updateHint();
   if(w!=='data'&&w!=='result'){ resizeCanvas(); }
 }
-function renderAll(){ if(!getCase(ui.lc)&&!(typeof ui.lc==='string'&&(model.loadCombos||[]).find(c=>'C'+c.id===ui.lc)))ui.lc=model.loadCases[0].id; renderLcSel(); renderPalette(); renderProps(); updateHint(); renderDataView(); renderResultsView(); draw(); }
+function renderAll(){ if(!getCase(ui.lc)&&!(typeof ui.lc==='string'&&((model.loadCombos||[]).find(c=>'C'+c.id===ui.lc)||ENV_KEYS.includes(ui.lc))))ui.lc=model.loadCases[0].id; renderLcSel(); renderPalette(); renderProps(); updateHint(); renderDataView(); renderResultsView(); draw(); }
 
 document.querySelectorAll('.wintab').forEach(t=>t.addEventListener('click',()=>switchWin(t.dataset.win)));
 $('analyzeBtn').addEventListener('click',runAnalysis);
 $('lcSel').addEventListener('change',e=>{
   const v=e.target.value;
-  ui.lc=v.charAt(0)==='C'?v:+v;
+  ui.lc=(v.charAt(0)==='C'||v.charAt(0)==='E')?v:+v;
   if(ui.resultsByCase){ const r=ui.resultsByCase[ui.lc]; ui.results=(r&&r.ok)?r:null; if(r&&!r.ok)setMsg(r.msg,true); }
   renderResultsView(); renderProps(); draw();
 });
@@ -2240,12 +2363,35 @@ resizeCanvas();
 fitView();
 /* ================= DIALOGS + EDIT/VIEW MENUS (SAP2000-style) ================= */
 function dlg(title, body, onOk){
-  document.getElementById('dlg').classList.remove('wide');
+  const d=document.getElementById('dlg'), ov=$('dlgOv');
+  d.classList.remove('wide');
+  /* reset ตำแหน่ง/ขนาดจากการลาก-ย่อขยายครั้งก่อน */
+  d.style.position=''; d.style.left=''; d.style.top=''; d.style.margin='';
+  d.style.width=''; d.style.height='';
+  ov.style.alignItems=''; ov.style.justifyContent='';
   $('dlgTitle').textContent=title;
   $('dlgBody').innerHTML=body;
-  $('dlgOv').classList.add('show');
-  $('dlgOk').onclick=()=>{ if(onOk()!==false) $('dlgOv').classList.remove('show'); };
-  $('dlgCancel').onclick=()=>$('dlgOv').classList.remove('show');
+  ov.classList.add('show');
+  $('dlgOk').onclick=()=>{ if(onOk()!==false) ov.classList.remove('show'); };
+  $('dlgCancel').onclick=()=>ov.classList.remove('show');
+  /* ลากย้ายหน้าต่างด้วยแถบหัวเรื่อง */
+  $('dlgTitle').onmousedown=e=>{
+    if(e.button!==0)return;
+    e.preventDefault();
+    const r=d.getBoundingClientRect();
+    if(d.style.position!=='fixed'){
+      d.style.position='fixed'; d.style.left=r.left+'px'; d.style.top=r.top+'px'; d.style.margin='0';
+      ov.style.alignItems='flex-start'; ov.style.justifyContent='flex-start';
+    }
+    const ox=e.clientX-r.left, oy=e.clientY-r.top;
+    const mv=e2=>{
+      d.style.left=Math.max(-r.width+80,Math.min(window.innerWidth-80,e2.clientX-ox))+'px';
+      d.style.top=Math.max(0,Math.min(window.innerHeight-40,e2.clientY-oy))+'px';
+    };
+    const up=()=>{ document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); };
+    document.addEventListener('mousemove',mv);
+    document.addEventListener('mouseup',up);
+  };
   const first=$('dlgBody').querySelector('input,select'); if(first)first.focus();
 }
 function openNodeDlg(id){
@@ -2504,9 +2650,12 @@ document.querySelectorAll('.mi[data-mi2]').forEach(mi=>{
     else if(k==='defLc')gotoData('hLc');
     else if(k==='defCase')gotoData('hLc');
     else if(k==='defCombo')gotoData('hCombo');
+    else if(k==='defEnv')openEnvDlg();
     else if(k==='steelTb')openSteelTableDlg();
     else if(k==='builtUp')openBuiltUpDlg(null);
-    else if(k==='wizard')openWizardDlg();
+    else if(k==='xlExport')openExportExcelDlg();
+  else if(k==='dxfImp')openImportDXFDlg();
+  else if(k==='wizard')openWizardDlg();
     else if(k==='asNL')openAssignNLoadDlg();
     else if(k==='asSec')openAssignSectionDlg();
     else if(k==='asMat')openAssignMaterialDlg();
@@ -2535,7 +2684,7 @@ function gotoData(id){
 renderIconbar();
 /* ============ SAP2000-style detail inspection (click member/node in Plot) ============ */
 var detailSt={mid:null, lc:null, x:null, saved:[]};
-function resKeys(){ return [...model.loadCases.map(c=>String(c.id)), ...(model.loadCombos||[]).map(c=>'C'+c.id)]; }
+function resKeys(){ return [...model.loadCases.map(c=>String(c.id)), ...(model.loadCombos||[]).map(c=>'C'+c.id), ...(typeof ENV_KEYS!=='undefined'?ENV_KEYS:[])]; }
 const DM_L=56, DM_R=16;
 
 function openMemberDetail(mid){
@@ -2550,13 +2699,14 @@ function openMemberDetail(mid){
       '<input type="number" id="dXin" step="0.1" min="0" placeholder="x (m)" style="width:74px;padding:3px 5px;border:1px solid var(--bord);border-radius:3px">'+
       '<button class="tbtn" id="dPin" title="บันทึกค่า ณ ตำแหน่ง x (หรือคลิกบนกราฟ)">📌 บันทึกค่า</button>'+
       '<button class="tbtn" id="dPrint" title="พิมพ์รายงาน member นี้">🖨 พิมพ์</button></div>'+
-    '<canvas id="dCv" width="680" height="480" style="width:680px;max-width:100%;border:1px solid #ccd0da;border-radius:4px;cursor:crosshair;background:#fff"></canvas>'+
+    '<canvas id="dCv" width="680" height="480" style="width:100%;border:1px solid #ccd0da;border-radius:4px;cursor:crosshair;background:#fff"></canvas>'+
     '<div id="dRead" style="font:12px \'Segoe UI\';color:#333;padding:5px 2px;min-height:18px">— เลื่อนเมาส์อ่านค่า • คลิกบนกราฟเพื่อบันทึกค่า ณ ตำแหน่งนั้น —</div>'+
+    '<div id="dLoads"></div>'+
     '<div id="dSaved"></div>'+
     '<div id="dTbl"></div>';
   dlg('🔍 รายละเอียดผล Member M'+mid+'  (N'+m.ni+' → N'+m.nj+',  L = '+fmt(memberLen(m),3)+' m)', body, ()=>{});
   document.getElementById('dlg').classList.add('wide');
-  $('dcase').onchange=e=>{ detailSt.lc=e.target.value; detailSt.x=null; drawDetail(); };
+  $('dcase').onchange=e=>{ detailSt.lc=e.target.value; detailSt.x=null; drawDetail(); renderMemberLoadsPanel(); };
   $('dPin').onclick=()=>{ const xv=parseFloat($('dXin').value); savePoint(isFinite(xv)?xv:detailSt.x); };
   $('dPrint').onclick=printDetail;
   const dc=$('dCv');
@@ -2570,6 +2720,7 @@ function openMemberDetail(mid){
   dc.addEventListener('mouseleave',()=>{ detailSt.x=null; drawDetail(); });
   dc.addEventListener('click',()=>{ if(detailSt.x!=null)savePoint(detailSt.x); });
   drawDetail();
+  renderMemberLoadsPanel();
 }
 function savePoint(x){
   const mr=curMr(); if(!mr)return;
@@ -2707,6 +2858,7 @@ function printDetail(){
     row('Axial N',mr.Ns,dF,u.fname)+row('Shear V',mr.Vs,dF,u.fname)+row('Moment M',mr.Ms,dM,u.mname)+row('Deflection δy',mr.dys,v=>v*1000,'mm')+'</table>'+
     (detailSt.saved.length?'<h2>📌 ค่าที่บันทึกไว้ ('+detailSt.saved.length+' ตำแหน่ง)</h2>'+
       '<table><tr><th>x (m)</th><th>N ('+u.fname+')</th><th>V ('+u.fname+')</th><th>M ('+u.mname+')</th><th>δy (mm)</th></tr>'+savedRowsHtml(mr,u,false)+'</table>':'')+
+    memberLoadsHtml(detailSt.mid,detailSt.lc).replace(/<div style="font:600[^>]*>/,'<h2>').replace('</div>','</h2>')+
     '<h2>แรงปลาย Member (แกนท้องถิ่น)</h2>'+
     '<table><tr><th>ปลาย</th><th>Axial ('+u.fname+')</th><th>Shear ('+u.fname+')</th><th>Moment ('+u.mname+')</th></tr>'+
     '<tr><td>I (N'+mr.ni+')</td><td>'+fmt(dF(mr.fL[0]))+'</td><td>'+fmt(dF(mr.fL[1]))+'</td><td>'+fmt(dM(mr.fL[2]))+'</td></tr>'+
@@ -2733,118 +2885,305 @@ function openNodeDetail(nid){
       '<td>'+fmt(nr.ux*1000,3)+'</td><td>'+fmt(nr.uy*1000,3)+'</td><td>'+(Math.abs(nr.rz)<1e-12?'0':nr.rz.toExponential(3))+'</td>'+
       (rc?'<td>'+fmt(dF(rc.Rx))+'</td><td>'+fmt(dF(rc.Ry))+'</td><td>'+fmt(dM(rc.Mz))+'</td>':'<td>—</td><td>—</td><td>—</td>')+'</tr>';
   }
-  h+='</table><div class="pnote">N'+nid+' พิกัด ('+fmt(n.x,3)+', '+fmt(n.y,3)+') m'+(n.sup?' • Support: '+supName(n.sup):'')+' • แถวไฮไลต์ = case ที่แสดงอยู่บน Plot</div>';
+  h+='</table>'+nodeLoadsHtml(nid)+'<div class="pnote">N'+nid+' พิกัด ('+fmt(n.x,3)+', '+fmt(n.y,3)+') m'+(n.sup?' • Support: '+supName(n.sup):'')+' • แถวไฮไลต์ = case ที่แสดงอยู่บน Plot</div>';
   h='<button class="tbtn" id="ndPrint" style="float:right">🖨 พิมพ์</button>'+h;
   dlg('🔍 รายละเอียดผล Node N'+nid+' — ทุก Load Case / Combination', h, ()=>{});
   document.getElementById('dlg').classList.add('wide');
   const pb=document.getElementById('ndPrint');
   if(pb)pb.onclick=()=>printHTML('SA2D — ผลวิเคราะห์ Node N'+nid+' (ทุก Case/Combination)', document.getElementById('dlgBody').innerHTML);
 }
-/* ============ THAI STEEL TABLE (มอก.1227-2558 / มอก.1228) ============ */
-/* [name, weight kg/m, A cm², Ix cm⁴, Iy cm⁴] */
-const STEEL_TABLE={
- 'H-BEAM (เอชบีม)':[
-  ['H 100x100x6x8',17.2,21.90,383,134],['H 125x125x6.5x9',23.8,30.31,847,293],
+/* ============ THAI STEEL TABLE — จากไฟล์ PDF ผู้ใช้ (TIS1227/TIS1228/JIS G3192/G3101/G3466/G3444) ============ */
+/* [name, weight kg/m, A cm², Ix cm⁴, Iy cm⁴]  • แผ่น/เหล็กแบน/เพลา: I คำนวณจากรูปทรง • ท่อ/กล่อง: Ix=Iy */
+var STEEL_TABLE={
+ 'H-Sections (TIS 1227 / JIS G3192)':[
+  ['H 100x100x6x8',17.2,21.9,383,134],['H 125x125x6.5x9',23.8,30.31,847,293],
+  ['H 150x75x5x7',14,17.85,666,50],['H 148x100x6x9',21.1,26.84,1020,151],
   ['H 150x150x7x10',31.5,40.14,1640,563],['H 175x175x7.5x11',40.2,51.21,2880,984],
-  ['H 200x200x8x12',49.9,63.53,4720,1600],['H 200x204x12x12',56.2,71.53,4980,1700],
-  ['H 208x202x10x16',65.7,83.69,6530,2200],['H 244x252x11x11',64.4,82.06,8790,2940],
-  ['H 248x249x8x13',66.5,84.70,9930,3350],['H 250x250x9x14',72.4,92.18,10800,3650],
-  ['H 250x255x14x14',82.2,104.7,11500,3880],['H 294x302x12x12',84.5,107.7,16900,5520],
-  ['H 298x299x9x14',87.0,110.5,18800,6240],['H 300x300x10x15',94.0,119.8,20400,6750],
+  ['H 198x99x4.5x7',18.2,23.18,1580,114],['H 200x100x5.5x8',21.3,27.16,1840,134],
+  ['H 194x150x6x9',30.6,39.01,2690,507],['H 200x200x8x12',49.9,63.53,4720,1600],
+  ['H 200x204x12x12',56.2,71.53,4980,1700],['H 208x202x10x16',65.7,83.69,6530,2200],
+  ['H 248x124x5x8',25.7,32.68,3540,255],['H 250x125x6x9',29.6,37.66,4050,294],
+  ['H 244x175x7x11',44.1,56.24,6120,984],['H 244x252x11x11',64.4,82.06,8790,2940],
+  ['H 248x249x8x13',66.5,84.7,9930,3350],['H 250x250x9x14',72.4,92.18,10800,3650],
+  ['H 250x255x14x14',82.2,104.7,11500,3880],['H 298x149x5.5x8',32,40.8,6320,442],
+  ['H 300x150x6.5x9',36.7,46.78,7210,508],['H 294x200x8x12',56.8,72.38,11300,1600],
+  ['H 298x201x9x14',65.4,83.36,13300,1900],['H 294x302x12x12',84.5,107.7,16900,5520],
+  ['H 298x299x9x14',87,110.8,18800,6240],['H 300x300x10x15',94,119.8,20400,6750],
   ['H 300x305x15x15',106,134.8,21500,7100],['H 304x301x11x17',106,134.8,23400,7730],
-  ['H 338x351x13x13',106,135.3,28200,9380],['H 344x348x10x16',115,146.0,33300,11200],
-  ['H 344x354x16x16',131,166.6,35300,11800],['H 350x350x12x19',137,173.9,40300,13600],
-  ['H 350x357x19x19',156,198.4,42800,14400],['H 388x402x15x15',140,178.5,49000,16300],
-  ['H 394x398x11x18',147,186.8,56100,18900],['H 400x400x13x21',172,218.7,66600,22400],
-  ['H 400x408x21x21',197,250.7,70900,23800],['H 414x405x18x28',232,295.4,92600,31000]
+  ['H 346x174x6x9',41.4,52.68,11100,792],['H 350x175x7x11',49.6,63.14,13600,984],
+  ['H 354x176x8x13',57.8,73.68,16100,1180],['H 336x249x8x12',69.2,88.15,18500,3090],
+  ['H 340x250x9x14',79.7,101.5,21700,3650],['H 338x351x13x13',106,135.3,28200,9380],
+  ['H 344x348x10x16',115,146,33300,11200],['H 344x354x16x16',131,166.6,35300,11800],
+  ['H 350x350x12x19',137,173.9,40300,13600],['H 350x357x19x19',156,198.4,42800,11400],
+  ['H 396x199x7x11',55.6,72.16,20000,1450],['H 400x200x8x13',66,84.12,23700,1740],
+  ['H 404x201x9x15',75.5,96.16,27500,2030],['H 386x299x9x14',94.3,120.1,33700,6240],
+  ['H 390x300x10x16',107,136,38700,7210],['H 388x402x15x15',140,178.5,49000,16300],
+  ['H 394x398x11x18',147,186.8,56100,18900],['H 394x405x18x18',168,214.4,59700,20000],
+  ['H 400x400x13x21',172,218.7,66600,22400],['H 400x408x21x21',197,250.7,70900,23800],
+  ['H 414x405x18x28',232,295.4,92800,31000],['H 446x199x8x12',66.2,84.3,28700,1580],
+  ['H 450x200x9x14',76,96.76,33500,1870],['H 456x201x10x17',88.9,113.3,40400,2310],
+  ['H 434x299x10x17',106,135,46800,6690],['H 440x300x11x18',124,157.4,56100,8110],
+  ['H 446x302x13x21',145,184.3,66400,9660],['H 496x199x9x14',79.5,101.3,41900,1840],
+  ['H 500x200x10x16',89.6,114.2,47800,2140],['H 506x201x11x19',103,131.3,56500,2580],
+  ['H 482x300x11x15',114,145.5,60400,6760],['H 488x300x11x18',128,163.5,71000,8110],
+  ['H 494x302x13x21',150,191.4,83800,9660],['H 596x199x10x15',94.6,120.5,68700,1980],
+  ['H 600x200x11x17',106,134.4,77600,2280],['H 606x201x12x20',120,152.5,90400,2720],
+  ['H 612x202x13x23',134,170.7,103000,3180],['H 582x300x12x17',137,174.5,103000,7670],
+  ['H 588x300x12x20',151,192.5,118000,9020],['H 594x302x14x23',175,222.4,137000,10600],
+  ['H 692x300x13x20',166,211.5,172000,9020],['H 700x300x13x24',185,235.5,201000,10800],
+  ['H 792x300x14x22',191,243.4,254000,9930],['H 800x300x14x26',210,267.4,292000,11700],
+  ['H 900x300x16x28',243,309.8,411000,12600]
  ],
- 'WIDE FLANGE (ไวด์แฟลงก์)':[
-  ['WF 100x50x5x7',9.3,11.85,187,14.8],['WF 150x75x5x7',14.0,17.85,666,49.5],
-  ['WF 148x100x6x9',21.1,26.84,1020,151],['WF 194x150x6x9',30.6,39.01,2690,507],
-  ['WF 198x99x4.5x7',18.2,23.18,1580,114],['WF 200x100x5.5x8',21.3,27.16,1840,134],
-  ['WF 244x175x7x11',44.1,56.24,6120,984],['WF 248x124x5x8',25.7,32.68,3540,255],
-  ['WF 250x125x6x9',29.6,37.68,4050,294],['WF 294x200x8x12',56.8,72.38,11300,1600],
-  ['WF 298x149x5.5x8',32.0,40.80,6320,442],['WF 298x201x9x14',65.4,83.36,13300,1900],
-  ['WF 300x150x6.5x9',36.7,46.78,7210,508],['WF 336x249x8x12',69.2,88.15,18500,3090],
-  ['WF 340x250x9x14',79.7,101.5,21700,3650],['WF 346x174x6x9',41.4,52.68,11100,792],
-  ['WF 350x175x7x11',49.6,63.14,13600,984],['WF 354x176x8x13',57.8,73.68,16100,1180],
-  ['WF 386x299x9x14',94.3,120.1,33700,6240],['WF 390x300x10x16',107,136.0,38700,7210],
-  ['WF 396x199x7x11',56.6,72.16,20000,1450],['WF 400x200x8x13',66.0,84.12,23700,1740],
-  ['WF 404x201x9x15',75.5,96.16,27500,2030],['WF 434x299x10x15',106,135.0,48800,6690],
-  ['WF 440x300x11x18',124,157.0,56100,8110],['WF 446x199x8x12',66.2,84.30,28700,1580],
-  ['WF 446x302x13x21',145,184.3,66400,9660],['WF 450x200x9x14',76.0,96.76,33500,1870],
-  ['WF 456x201x10x17',88.9,113.3,40400,2320],['WF 482x300x11x15',114,145.5,60400,6760],
-  ['WF 488x300x11x18',128,163.5,71000,8110],['WF 494x302x13x21',150,191.4,83800,9660],
-  ['WF 496x199x9x14',79.5,101.3,41900,1840],['WF 500x200x10x16',89.6,114.2,47800,2140],
-  ['WF 506x201x11x19',103,131.3,56500,2580],['WF 582x300x12x17',137,174.5,103000,7670],
-  ['WF 588x300x12x20',151,192.5,118000,9020],['WF 594x302x14x23',175,222.4,137000,10600],
-  ['WF 596x199x10x15',94.6,120.5,68700,1980],['WF 600x200x11x17',106,134.4,77600,2280],
-  ['WF 606x201x12x20',120,152.5,90400,2720],['WF 612x202x13x23',134,170.7,103000,3180],
-  ['WF 692x300x13x20',166,211.5,172000,9020],['WF 700x300x13x24',185,235.5,201000,10800],
-  ['WF 792x300x14x22',191,243.4,254000,9930],['WF 800x300x14x26',210,267.4,292000,11700],
-  ['WF 890x299x15x23',213,270.9,345000,10300],['WF 900x300x16x28',243,309.8,411000,12600],
-  ['WF 912x302x18x34',286,364.0,498000,15700]
- ],
- 'I-BEAM (ไอบีม)':[
-  ['I 150x75x5.5x9.5',17.1,21.83,819,57.5],['I 200x100x7x10',26.0,33.06,2170,138],
+ 'I-Sections (TIS 1227 / JIS G3192)':[
+  ['I 100x75x5x8',12.9,16.43,281,47.3],['I 125x75x5.5x9.5',16.1,20.45,538,57.5],
+  ['I 150x75x5.5x9.5',17.1,21.83,819,57.5],['I 150x125x8.5x14',36.2,46.15,1760,385],
+  ['I 180x100x6x10',23.6,30.06,1670,138],['I 200x100x7x10',26,33.06,2170,138],
   ['I 200x150x9x16',50.4,64.16,4460,753],['I 250x125x7.5x12.5',38.3,48.79,5180,337],
-  ['I 250x125x10x19',55.5,70.73,7310,538],['I 300x150x8x13',48.3,61.58,9480,588],
-  ['I 300x150x10x18.5',65.5,83.47,12700,886],['I 300x150x11.5x22',76.8,97.88,14700,1080],
-  ['I 350x150x9x15',58.5,74.58,15200,702],['I 350x150x12x24',87.2,111.1,22400,1180],
-  ['I 400x150x10x18',72.0,91.73,24100,864],['I 400x150x12.5x25',95.8,122.1,31700,1240],
-  ['I 450x175x11x20',91.7,116.8,39200,1510],['I 450x175x13x26',115,146.1,48800,2020],
+  ['I 300x150x10x18.5',65.5,83.47,12700,886],['I 350x150x10x19',55.5,70.73,7310,538],
+  ['I 350x150x8x13',48.3,61.58,9480,588],['I 350x150x11.5x22',76.8,97.88,14700,1080],
+  ['I 350x150x9x15',58.5,74.58,15200,702],['I 400x150x12x24',87.2,111.1,22400,1180],
+  ['I 400x150x10x18',72,91.73,24100,864],['I 450x175x12.5x25',95.8,122.1,31700,1240],
+  ['I 450x175x11x20',91.7,116.8,39200,1510],['I 600x190x13x26',115,146.1,48800,2020],
   ['I 600x190x13x25',133,169.4,98400,2460],['I 600x190x16x35',176,224.5,130000,3540]
  ],
- 'CHANNEL (เหล็กรางน้ำ)':[
-  ['C 50x25x5x6',3.86,4.92,16.8,2.49],['C 75x40x5x7',6.92,8.818,75.8,12.2],
-  ['C 100x50x5x7.5',9.36,11.92,188,26.0],['C 125x65x6x8',13.4,17.11,424,61.8],
-  ['C 150x75x6.5x10',18.6,23.71,861,117],['C 150x75x9x12.5',24.0,30.59,1050,147],
-  ['C 180x75x7x10.5',21.4,27.20,1380,131],['C 200x80x7.5x11',24.6,31.33,1950,168],
-  ['C 200x90x8x13.5',30.3,38.65,2490,277],['C 250x90x9x13',34.6,44.07,4180,294],
-  ['C 250x90x11x14.5',40.2,51.17,4680,329],['C 300x90x9x13',38.1,48.57,6440,309],
-  ['C 300x90x10x15.5',43.8,55.74,7410,360],['C 300x90x12x16',48.6,61.90,7870,379],
-  ['C 380x100x10.5x16',54.5,69.39,14500,535],['C 380x100x13x16.5',62.0,78.96,15600,565],
-  ['C 380x100x13x20',67.3,85.71,17600,655]
+ 'Channels (TIS 1227 / JIS G3192)':[
+  ['C 75x40x5x7',6.92,8.818,75.3,12.2],['C 100x50x5x7.5',9.36,11.92,188,26],
+  ['C 125x65x6x8',13.4,17.11,424,61.8],['C 150x75x6.5x10',18.6,23.71,861,117],
+  ['C 150x75x9x12.5',24,30.59,1050,147],['C 180x75x7x10.5',21.4,27.2,1380,131],
+  ['C 200x80x7.5x11',24.6,31.33,1950,168],['C 200x90x8x13.5',30.3,38.65,2490,277],
+  ['C 200x90x9x13',34.6,44.07,4180,294],['C 250x90x11x14.5',40.2,51.17,4680,329],
+  ['C 250x90x9x13',38.1,48.57,6440,309],['C 300x90x10x15.5',43.8,55.74,7410,360],
+  ['C 300x90x12x16',48.6,61.9,7870,379],['C 300x90x10.5x16',54.5,63.39,14500,535],
+  ['C 380x100x13x16.5',62,78.96,15600,565],['C 380x100x13x20',67.3,85.71,17600,655]
  ],
- 'ANGLE (เหล็กฉากขาเท่า)':[
-  ['L 25x25x3',1.12,1.427,0.80,0.80],['L 30x30x3',1.36,1.727,1.42,1.42],
-  ['L 40x40x3',1.83,2.336,3.53,3.53],['L 40x40x5',2.95,3.755,5.42,5.42],
-  ['L 45x45x4',2.74,3.492,6.50,6.50],['L 45x45x5',3.38,4.302,7.91,7.91],
-  ['L 50x50x4',3.06,3.892,9.06,9.06],['L 50x50x5',3.77,4.802,11.1,11.1],
-  ['L 50x50x6',4.43,5.644,12.6,12.6],['L 60x60x4',3.68,4.692,16.0,16.0],
-  ['L 60x60x5',4.55,5.802,19.6,19.6],['L 65x65x5',5.00,6.367,25.3,25.3],
+ 'Equal Angles (TIS 1227)':[
+  ['L 25x25x3',1.12,1.427,0.797,0.797],['L 25x25x5',1.77,2.26,1.2,1.2],
+  ['L 25x25x3',1.36,1.727,1.42,1.42],['L 30x30x5',2.18,2.78,2.16,2.16],
+  ['L 30x30x3',1.83,2.336,3.53,3.53],['L 40x40x5',2.95,3.755,5.42,5.42],
+  ['L 40x40x6',3.52,4.48,6.31,6.31],['L 40x40x4',2.74,3.492,6.5,6.5],
+  ['L 45x45x5',3.38,4.302,7.91,7.91],['L 45x45x3',2.33,2.96,6.86,6.86],
+  ['L 45x45x4',3.06,3.892,9.06,9.06],['L 50x50x5',3.77,4.802,11.1,11.1],
+  ['L 50x50x6',4.43,5.644,12.6,12.6],['L 50x50x4',3.68,4.692,16,16],
+  ['L 60x60x5',4.55,5.802,19.6,19.6],['L 60x60x5',5,6.367,25.3,25.3],
   ['L 65x65x6',5.91,7.527,29.4,29.4],['L 65x65x8',7.66,9.761,36.8,36.8],
-  ['L 70x70x6',6.38,8.127,37.1,37.1],['L 75x75x6',6.85,8.727,46.1,46.1],
-  ['L 75x75x9',9.96,12.69,64.4,64.4],['L 75x75x12',13.0,16.56,81.9,81.9],
-  ['L 80x80x6',7.32,9.327,56.4,56.4],['L 90x90x6',8.28,10.55,80.7,80.7],
-  ['L 90x90x7',9.59,12.22,93.0,93.0],['L 90x90x10',13.3,17.00,125,125],
-  ['L 90x90x13',17.0,21.75,156,156],['L 100x100x7',10.7,13.62,129,129],
-  ['L 100x100x10',14.9,19.00,175,175],['L 100x100x13',19.1,24.31,220,220],
-  ['L 120x120x8',14.7,18.76,258,258],['L 130x130x9',17.9,22.74,366,366],
+  ['L 70x70x6',6.38,8.127,37.1,37.1],['L 70x70x6',6.85,8.727,46.1,46.1],
+  ['L 75x75x9',9.96,12.69,64.4,64.4],['L 75x75x12',13,16.56,81.9,81.9],
+  ['L 80x80x6',7.32,9.327,56.4,56.4],['L 80x80x6',8.28,10.55,80.7,80.7],
+  ['L 80x80x7',9.59,12.22,93,93],['L 90x90x10',13.3,17,125,125],
+  ['L 90x90x12',15.9,20.3,148,148],['L 90x90x13',17,21.71,156,156],
+  ['L 90x90x7',10.7,13.62,129,129],['L 90x90x10',14.9,19,175,175],
+  ['L 100x100x12',17.8,22.7,207,207],['L 100x100x13',19.1,24.31,220,220],
+  ['L 120x120x8',14.7,18.76,258,258],['L 120x120x9',17.9,22.74,366,366],
   ['L 130x130x12',23.4,29.76,467,467],['L 130x130x15',28.8,36.75,568,568],
-  ['L 150x150x12',27.3,34.77,740,740],['L 150x150x15',33.6,42.74,888,888],
-  ['L 150x150x19',41.9,53.38,1090,1090],['L 175x175x12',31.8,40.52,1170,1170],
-  ['L 175x175x15',39.4,50.21,1440,1440],['L 200x200x15',45.3,57.75,2180,2180],
-  ['L 200x200x20',59.7,76.00,2820,2820],['L 200x200x25',73.6,93.75,3420,3420],
-  ['L 250x250x25',93.7,119.4,6950,6950],['L 250x250x35',128,162.6,9110,9110]
+  ['L 130x130x12',27.3,34.77,740,740],['L 150x150x15',33.6,42.74,888,888],
+  ['L 150x150x19',41.9,53.38,1090,1090],['L 150x150x12',31.8,40.52,1170,1170],
+  ['L 175x175x15',39.4,50.21,1440,1440],['L 175x175x15',45.3,57.75,2180,2180],
+  ['L 200x200x20',59.7,76,2820,2820],['L 200x200x25',73.6,93.75,3420,3420],
+  ['L 200x200x25',93.7,119.4,6950,6950],['L 250x250x35',128,162.6,9110,9110]
  ],
- 'C LIGHT LIP (ตัวซี มอก.1228)':[
-  ['C-Lip 60x30x10x2.3',2.25,2.872,15.6,3.32],['C-Lip 75x33x15x2.3',2.89,3.677,31.0,6.58],
-  ['C-Lip 75x45x15x2.3',3.25,4.137,37.1,11.8],['C-Lip 90x45x20x2.3',3.70,4.712,58.6,14.2],
-  ['C-Lip 90x45x20x3.2',5.00,6.367,76.9,18.3],['C-Lip 100x50x20x2.3',4.06,5.172,80.7,19.0],
-  ['C-Lip 100x50x20x3.2',5.50,7.007,107,24.5],['C-Lip 100x50x20x4.0',6.71,8.548,127,28.7],
-  ['C-Lip 100x50x20x4.5',7.43,9.469,139,30.9],['C-Lip 120x40x20x3.2',5.50,7.007,144,15.3],
-  ['C-Lip 120x60x20x3.2',6.51,8.287,186,40.9],['C-Lip 120x60x25x4.5',9.20,11.72,252,58.0],
-  ['C-Lip 125x50x20x3.2',6.13,7.807,181,26.6],['C-Lip 125x50x20x4.0',7.50,9.548,217,33.1],
-  ['C-Lip 125x50x20x4.5',8.32,10.59,238,33.5],['C-Lip 150x50x20x3.2',6.76,8.607,280,28.3],
-  ['C-Lip 150x50x20x4.5',9.20,11.72,368,35.7],['C-Lip 150x65x20x3.2',7.51,9.567,332,53.8],
-  ['C-Lip 150x65x20x4.0',9.22,11.75,401,63.7],['C-Lip 150x75x20x3.2',8.01,10.21,366,76.4],
-  ['C-Lip 150x75x20x4.0',9.85,12.55,445,91.0],['C-Lip 150x75x20x4.5',11.0,13.97,489,99.2],
-  ['C-Lip 150x75x25x3.2',8.27,10.53,375,83.6],['C-Lip 150x75x25x4.0',10.2,12.95,455,99.8],
-  ['C-Lip 150x75x25x4.5',11.3,14.42,501,109],['C-Lip 200x75x20x3.2',9.27,11.81,716,84.1],
-  ['C-Lip 200x75x20x4.0',11.4,14.55,871,100],['C-Lip 200x75x20x4.5',12.7,16.22,963,109],
-  ['C-Lip 200x75x25x3.2',9.52,12.13,736,92.3],['C-Lip 200x75x25x4.0',11.7,14.95,895,110],
-  ['C-Lip 200x75x25x4.5',13.1,16.67,990,121],['C-Lip 250x75x25x4.5',14.9,18.92,1690,129]
+ 'Light Lip Channels (TIS 1228)':[
+  ['C-Lip 250x75x25x4.5',14.9,18.92,1690,129],['C-Lip 250x75x25x4.5',13.1,16.67,990,121],
+  ['C-Lip 200x75x25x4',11.7,14.95,895,110],['C-Lip 200x75x25x3.2',9.52,12.13,736,92.3],
+  ['C-Lip 200x75x25x4.5',12.7,16.22,963,109],['C-Lip 200x75x20x4',11.4,14.55,871,100],
+  ['C-Lip 200x75x20x3.2',9.27,11.81,716,84.1],['C-Lip 200x75x20x4.5',11.3,14.42,501,109],
+  ['C-Lip 150x75x25x4',10.2,12.95,455,99.8],['C-Lip 150x75x25x3.2',8.27,10.53,375,83.6],
+  ['C-Lip 150x75x25x4.5',11,13.97,489,99.2],['C-Lip 150x75x20x4',9.85,12.55,445,91],
+  ['C-Lip 150x75x20x3.2',8.01,10.21,366,76.4],['C-Lip 150x75x20x4',9.22,11.75,401,63.7],
+  ['C-Lip 150x65x20x3.2',7.51,9.567,332,53.8],['C-Lip 150x65x20x2.3',5.5,7.012,248,41.1],
+  ['C-Lip 150x65x20x4.5',9.2,11.72,368,35.7],['C-Lip 150x50x20x3.2',6.76,8.607,280,28.3],
+  ['C-Lip 150x50x20x2.3',4.96,6.322,210,21.9],['C-Lip 150x50x20x4.5',8.32,10.59,238,33.5],
+  ['C-Lip 150x50x20x4',7.5,9.548,217,33.1],['C-Lip 150x50x20x3.2',6.13,7.807,181,26.6],
+  ['C-Lip 150x50x20x2.3',4.51,5.747,137,20.6],['C-Lip 120x60x25x4.5',9.2,11.72,252,58],
+  ['C-Lip 120x60x25x3.2',6.51,8.287,186,40.9],['C-Lip 120x60x25x2.3',4.78,6.092,140,31.3],
+  ['C-Lip 120x40x20x3.2',5.5,7.007,144,15.3],['C-Lip 120x40x20x4.5',7.43,9.469,139,30.9],
+  ['C-Lip 120x40x20x4',6.71,8.548,127,28.7],['C-Lip 120x40x20x3.2',5.5,7.007,107,24.5],
+  ['C-Lip 100x50x20x2.8',4.87,6.205,99.8,23.2],['C-Lip 100x50x20x2.3',4.06,5.172,80.7,19],
+  ['C-Lip 100x50x20x2',3.56,4.537,71.4,16.9],['C-Lip 100x50x20x1.6',2.88,3.672,58.4,14],
+  ['C-Lip 100x50x20x3.2',5,6.367,76.9,18.3],['C-Lip 90x45x15x2.3',3.7,4.712,58.6,14.2],
+  ['C-Lip 90x45x15x1.6',2.63,3.352,42.6,10.5],['C-Lip 90x45x15x2.3',3.25,4.137,37.1,11.8],
+  ['C-Lip 75x45x15x2',2.86,3.637,33,10.5],['C-Lip 75x45x15x1.6',2.32,2.952,27.1,8.71],
+  ['C-Lip 75x35x15x2.3',2.89,3.677,31,6.58],['C-Lip 70x40x25x1.6',2.38,3.032,22,8],
+  ['C-Lip 70x40x25x2.3',2.25,2.872,15.6,3.32],['C-Lip 60x30x10x2',1.99,2.537,14,3.01],
+  ['C-Lip 60x30x10x1.6',1.63,2.072,11.6,2.56]
+ ],
+ 'Square Tubes (เหล็กกล่อง)':[
+  ['SQT 25x25x2',1.36,1.74,1.48,1.48],['SQT 25x25x2.3',1.53,1.97,1.61,1.61],
+  ['SQT 25x25x2.6',1.65,2.1,1.63,1.63],['SQT 25x25x3.2',1.91,2.44,1.75,1.75],
+  ['SQT 32x32x2.3',2.04,2.6,3.71,3.71],['SQT 32x32x3.2',2.69,3.42,4.54,4.54],
+  ['SQT 38x38x2.3',2.47,3.15,6.54,6.54],['SQT 38x38x3.2',3.29,4.19,8.18,8.18],
+  ['SQT 50x50x1.6',2.38,3.03,11.7,11.7],['SQT 50x50x2',2.91,3.7,13.9,13.9],
+  ['SQT 50x50x2.3',3.34,4.25,15.9,15.9],['SQT 50x50x3.2',4.5,5.73,20.4,20.4],
+  ['SQT 50x50x3.6',4.9,6.24,21.4,21.4],['SQT 50x50x4',5.35,6.81,22.9,22.9],
+  ['SQT 50x50x5',6.39,8.14,25.7,25.7],['SQT 75x75x2.3',5.14,6.55,57.1,57.1],
+  ['SQT 75x75x3.2',7.01,8.93,75.5,75.5],['SQT 75x75x4',8.59,10.95,90.2,90.2],
+  ['SQT 75x75x4.5',9.55,12.17,98.6,98.6],['SQT 100x100x2.3',6.95,8.85,140,140],
+  ['SQT 100x100x3.2',9.52,12.13,187,187],['SQT 100x100x4',11.7,14.95,226,226],
+  ['SQT 100x100x4.5',13.1,16.67,249,249],['SQT 100x100x6',17,21.63,311,311],
+  ['SQT 125x125x3.2',12,15.33,376,376],['SQT 125x125x4.5',16.6,21.17,506,506],
+  ['SQT 125x125x5',18.3,23.36,553,553],['SQT 125x125x6',21.7,27.63,641,641],
+  ['SQT 150x150x4.5',20.1,25.67,896,896],['SQT 150x150x5',22.3,28.36,982,982],
+  ['SQT 150x150x6',26.4,33.63,1150,1150],['SQT 150x150x6.3',27.4,34.8,1174,1174]
+ ],
+ 'Rectangular Tubes (แป๊บแบน)':[
+  ['RECT 50x25x2',2.12,2.7,8.17,2.76],['RECT 50x25x2.3',2.44,3.1,9.31,3.1],
+  ['RECT 50x25x3.2',3.24,4.13,11.6,3.8],['RECT 50x25x3.6',3.48,4.44,11.7,3.86],
+  ['RECT 75x38x2.3',3.81,4.85,34.6,12],['RECT 75x38x3.2',5.15,5.15,45,15.4],
+  ['RECT 75x45x1.6',2.88,3.67,28.4,12.9],['RECT 75x45x2.3',4.06,5.17,38.9,17.6],
+  ['RECT 75x45x3.2',5.5,7.01,50.8,22.8],['RECT 100x50x2',4.48,5.7,74.1,25.5],
+  ['RECT 100x50x2.3',5.14,6.55,84.8,29],['RECT 100x50x3.2',7.01,8.93,112,38],
+  ['RECT 100x50x3.6',7.72,9.84,121,40.9],['RECT 100x50x4',8.59,10.95,142,46.7],
+  ['RECT 100x50x4.5',9.55,12.17,147,48.9],['RECT 125x75x2.3',6.95,8.85,192,87.5],
+  ['RECT 125x75x3.2',9.52,12.13,257,117],['RECT 125x75x4',11.7,14.95,311,141],
+  ['RECT 125x75x4.5',13.1,16.67,342,155],['RECT 125x75x6',17,21.63,428,192],
+  ['RECT 150x50x3.2',9.63,12.13,314.92,55.71],['RECT 150x50x4.5',13.5,17.03,423.93,75.75],
+  ['RECT 150x50x6.3',18.77,22.84,536.98,93.65],['RECT 200x100x4.5',20.1,25.67,1330,455],
+  ['RECT 200x100x6',26.4,33.63,1700,577],['RECT 200x100x6.3',27.4,34.8,1739,591]
+ ],
+ 'Carbon Steel Pipes (ท่อกลม)':[
+  ['PIPE 21.7x2',0.97,1.24,0.61,0.61],['PIPE 27.2x2',1.24,1.58,1.26,1.26],
+  ['PIPE 27.2x2.3',1.41,1.8,1.41,1.41],['PIPE 34x2.3',1.8,2.29,2.89,2.89],
+  ['PIPE 42.7x2.3',2.29,2.92,5.97,5.97],['PIPE 42.7x2.5',2.48,3.16,6.4,6.4],
+  ['PIPE 48.6x2.3',2.63,3.35,8.99,8.99],['PIPE 48.6x2.5',2.84,3.62,9.65,9.65],
+  ['PIPE 48.6x2.8',3.16,4.03,10.6,10.6],['PIPE 48.6x3.2',3.58,4.56,11.8,11.8],
+  ['PIPE 60.5x2.3',3.3,4.21,17.8,17.8],['PIPE 60.5x3.2',4.52,5.76,23.7,23.7],
+  ['PIPE 60.5x4',5.57,7.1,28.5,28.5],['PIPE 76.3x2.8',5.08,6.47,43.7,43.7],
+  ['PIPE 76.3x3.2',5.77,7.35,49.2,49.2],['PIPE 76.3x4',7.13,9.09,59.5,59.5],
+  ['PIPE 89.1x2.8',5.96,7.59,70.7,70.7],['PIPE 89.1x3.2',6.78,8.64,79.8,79.8],
+  ['PIPE 101.6x3.2',7.76,9.89,120,120],['PIPE 101.6x4',9.63,12.26,146,146],
+  ['PIPE 114.3x3.2',8.77,11.17,172,172],['PIPE 114.3x3.5',9.58,12.18,187,187],
+  ['PIPE 114.3x4.5',12.2,15.52,234,234],['PIPE 139.8x3.6',12.1,15.4,357,357],
+  ['PIPE 139.8x4',13.4,17.07,394,394],['PIPE 139.8x4.5',15,19.13,438,438],
+  ['PIPE 139.8x6',19.8,25.22,566,566],['PIPE 165.2x4.5',17.8,22.72,734,734],
+  ['PIPE 165.2x5',19.8,25.16,808,808],['PIPE 165.2x6',23.6,30.01,952,952],
+  ['PIPE 165.2x7.1',27.7,35.26,1100,1100],['PIPE 216.3x4.5',23.5,29.94,1680,1680],
+  ['PIPE 216.3x5.8',30.1,38.36,2130,2130],['PIPE 216.3x7',36.1,46.03,2520,2520],
+  ['PIPE 216.3x8.2',42.1,53.61,2910,2910]
+ ],
+ 'Flat Bars (เหล็กแบน)':[
+  ['FB 25x4.5',0.88,1.125,0.59,0.019],['FB 32x4.5',1.13,1.44,1.23,0.024],
+  ['FB 38x4.5',1.34,1.71,2.06,0.029],['FB 44x4.5',1.55,1.98,3.19,0.033],
+  ['FB 50x4.5',1.77,2.25,4.69,0.038],['FB 25x6',1.18,1.5,0.78,0.045],
+  ['FB 32x6',1.51,1.92,1.64,0.058],['FB 38x6',1.79,2.28,2.74,0.068],
+  ['FB 44x6',2.07,2.64,4.26,0.079],['FB 50x6',2.36,3,6.25,0.09],
+  ['FB 65x6',3.06,3.9,13.73,0.117],['FB 75x6',3.53,4.5,21.09,0.135],
+  ['FB 90x6',4.24,5.4,36.45,0.162],['FB 100x6',4.71,6,50,0.18],
+  ['FB 125x6',5.89,7.5,97.66,0.225],['FB 25x8',1.57,2,1.04,0.107],
+  ['FB 32x8',2.01,2.56,2.18,0.137],['FB 38x8',2.39,3.04,3.66,0.162],
+  ['FB 44x8',2.76,3.52,5.68,0.188],['FB 65x8',4.08,5.2,18.31,0.277],
+  ['FB 75x8',4.71,6,28.12,0.32],['FB 90x8',5.65,7.2,48.6,0.384],
+  ['FB 100x8',6.28,8,66.67,0.427],['FB 125x8',7.85,10,130.21,0.533],
+  ['FB 25x9',1.77,2.25,1.17,0.152],['FB 38x9',2.68,3.42,4.12,0.231],
+  ['FB 44x9',3.11,3.96,6.39,0.267],['FB 50x9',3.53,4.5,9.38,0.304],
+  ['FB 65x9',4.59,5.85,20.6,0.395],['FB 75x9',5.3,6.75,31.64,0.456],
+  ['FB 90x9',6.36,8.1,54.68,0.547],['FB 100x9',7.06,9,75,0.608],
+  ['FB 125x9',8.83,11.25,146.48,0.759],['FB 150x9',10.6,13.5,253.12,0.911],
+  ['FB 180x9',12.7,16.2,437.4,1.094],['FB 200x9',14.1,18,600,1.215],
+  ['FB 230x9',16.2,20.7,912.53,1.397],['FB 250x9',17.7,22.5,1171.88,1.519],
+  ['FB 32x11.9',3.01,3.81,3.25,0.449],['FB 25x12',2.36,3,1.56,0.36],
+  ['FB 38x12',3.58,4.56,5.49,0.547],['FB 44x12',4.14,5.28,8.52,0.634],
+  ['FB 50x12',4.71,6,12.5,0.72],['FB 65x12',6.12,7.8,27.46,0.936],
+  ['FB 75x12',7.06,9,42.19,1.08],['FB 90x12',8.48,10.8,72.9,1.296],
+  ['FB 100x12',9.42,12,100,1.44],['FB 125x12',11.8,15,195.31,1.8],
+  ['FB 150x12',14.1,18,337.5,2.16],['FB 180x12',17,21.6,583.2,2.592],
+  ['FB 200x12',18.8,24,800,2.88],['FB 230x12',21.7,27.6,1216.7,3.312],
+  ['FB 250x12',23.6,30,1562.5,3.6],['FB 280x12',26.4,33.6,2195.2,4.032],
+  ['FB 300x12',28.3,36,2700,4.32],['FB 32x16',4.02,5.12,4.37,1.092],
+  ['FB 38x16',4.77,6.08,7.32,1.297],['FB 44x16',5.53,7.04,11.36,1.502],
+  ['FB 50x16',6.28,8,16.67,1.707],['FB 65x16',8.16,10.4,36.62,2.219],
+  ['FB 75x16',9.42,12,56.25,2.56],['FB 90x16',11.3,14.4,97.2,3.072],
+  ['FB 100x16',12.6,16,133.33,3.413],['FB 125x16',15.7,20,260.42,4.267],
+  ['FB 150x16',18.8,24,450,5.12],['FB 180x16',22.6,28.8,777.6,6.144],
+  ['FB 200x16',25.1,32,1066.67,6.827],['FB 230x16',28.9,36.8,1622.27,7.851],
+  ['FB 250x16',31.4,40,2083.33,8.533],['FB 280x16',35.2,44.8,2926.93,9.557],
+  ['FB 300x16',37.7,48,3600,10.24],['FB 38x19',5.67,7.22,8.69,2.172],
+  ['FB 44x19',6.56,8.36,13.49,2.515],['FB 50x19',7.46,9.5,19.79,2.858],
+  ['FB 65x19',9.69,12.35,43.48,3.715],['FB 75x19',11.2,14.25,66.8,4.287],
+  ['FB 90x19',13.4,17.1,115.42,5.144],['FB 100x19',14.9,19,158.33,5.716],
+  ['FB 125x19',18.6,23.75,309.24,7.145],['FB 150x19',22.4,28.5,534.38,8.574],
+  ['FB 180x19',26.8,34.2,923.4,10.288],['FB 200x19',29.8,38,1266.67,11.432],
+  ['FB 230x19',34.3,43.7,1926.44,13.146],['FB 250x19',37.3,47.5,2473.96,14.29],
+  ['FB 280x19',41.8,53.2,3475.73,16.004],['FB 300x19',44.7,57,4275,17.147],
+  ['FB 50x22',8.64,11,22.92,4.437],['FB 65x22',11.2,14.3,50.35,5.768],
+  ['FB 75x22',13,16.5,77.34,6.655],['FB 90x22',15.5,19.8,133.65,7.986],
+  ['FB 100x22',17.3,22,183.33,8.873],['FB 125x22',21.6,27.5,358.07,11.092],
+  ['FB 150x22',25.9,33,618.75,13.31],['FB 180x22',31.1,39.6,1069.2,15.972],
+  ['FB 200x22',34.5,44,1466.67,17.747],['FB 230x22',39.7,50.6,2230.62,20.409],
+  ['FB 250x22',43.2,55,2864.58,22.183],['FB 280x22',48.4,61.6,4024.53,24.845],
+  ['FB 300x22',51.8,66,4950,26.62],['FB 50x25',9.81,12.5,26.04,6.51],
+  ['FB 65x25',12.8,16.25,57.21,8.464],['FB 75x25',14.7,18.75,87.89,9.766],
+  ['FB 90x25',17.7,22.5,151.88,11.719],['FB 100x25',19.6,25,208.33,13.021],
+  ['FB 125x25',24.5,31.25,406.9,16.276],['FB 150x25',29.4,37.5,703.12,19.531],
+  ['FB 200x25',39.2,50,1666.67,26.042],['FB 230x25',45.1,57.5,2534.79,29.948],
+  ['FB 250x25',49.1,62.5,3255.21,32.552],['FB 280x25',55,70,4573.33,36.458],
+  ['FB 300x25',58.9,75,5625,39.062],['FB 100x28',22,28,233.33,18.293],
+  ['FB 125x28',27.5,35,455.73,22.867],['FB 150x28',33,42,787.5,27.44],
+  ['FB 180x28',39.6,50.4,1360.8,32.928],['FB 200x28',44,56,1866.67,36.587],
+  ['FB 250x28',55,70,3645.83,45.733],['FB 280x28',61.5,78.4,5122.13,51.221],
+  ['FB 300x28',65.9,84,6300,54.88],['FB 100x32',25.1,32,266.67,27.307],
+  ['FB 125x32',31.4,40,520.83,34.133],['FB 150x32',37.7,48,900,40.96],
+  ['FB 180x32',45.2,57.6,1555.2,49.152],['FB 200x32',50.2,64,2133.33,54.613],
+  ['FB 250x32',62.8,80,4166.67,68.267],['FB 280x32',70.3,89.6,5853.87,76.459],
+  ['FB 300x32',75.4,96,7200,81.92],['FB 100x36',28.3,36,300,38.88],
+  ['FB 125x36',35.3,45,585.94,48.6],['FB 150x36',42.4,54,1012.5,58.32],
+  ['FB 180x36',50.9,64.8,1749.6,69.984],['FB 200x36',56.5,72,2400,77.76],
+  ['FB 250x36',70.6,90,4687.5,97.2],['FB 280x36',79.1,100.8,6585.6,108.864],
+  ['FB 300x36',84.8,108,8100,116.64]
+ ],
+ 'Square Bars (เหล็กสี่เหลี่ยมตัน)':[
+  ['SQB 1/4" (6.3 mm)',0.316,0.4,0.01,0.01],['SQB 3/8" (9.5 mm)',0.711,0.91,0.07,0.07],
+  ['SQB 1/2" (12.7 mm)',1.265,1.61,0.22,0.22],['SQB 5/8" (15.9 mm)',1.977,2.52,0.53,0.53],
+  ['SQB 3/4" (19.0 mm)',2.846,3.63,1.1,1.1],['SQB 1" (25.4 mm)',5.06,6.45,3.47,3.47],
+  ['SQB 1-1/4" (31.8 mm)',7.907,10.08,8.47,8.47],['SQB 1-1/2" (38.1 mm)',11.385,14.52,17.56,17.56],
+  ['SQB 2" (50.8 mm)',20.239,25.81,55.5,55.5],['SQB 2-1/2" (63.5 mm)',31.624,40.32,135.49,135.49],
+  ['SQB 3" (76.2 mm)',45.538,58.06,280.96,280.96],['SQB 3-1/2" (88.9 mm)',61.982,79.03,520.51,520.51],
+  ['SQB 4" (101.6 mm)',80.956,103.23,887.96,887.96],['SQB 5" (127.0 mm)',126.494,161.29,2167.87,2167.87]
+ ],
+ 'Round Bars SR24 (เหล็กเส้นกลม)':[
+  ['RB 6 (SR24)',0.222,0.283,0.0064,0.0064],['RB 9 (SR24)',0.499,0.636,0.0322,0.0322],
+  ['RB 12 (SR24)',0.888,1.131,0.1018,0.1018],['RB 15 (SR24)',1.387,1.767,0.2485,0.2485],
+  ['RB 19 (SR24)',2.226,2.835,0.6397,0.6397],['RB 25 (SR24)',3.853,4.909,1.9175,1.9175],
+  ['RB 28 (SR24)',4.834,6.158,3.0172,3.0172],['RB 34 (SR24)',7.127,9.079,6.5597,6.5597]
+ ],
+ 'Deformed Bars (เหล็กข้ออ้อย)':[
+  ['DB 10 (SD30/SD40)',0.616,0.785,0.049,0.049],['DB 12 (SD30/SD40)',0.888,1.131,0.102,0.102],
+  ['DB 16 (SD30/SD40)',1.578,2.01,0.322,0.322],['DB 20 (SD30/SD40)',2.466,3.146,0.785,0.785],
+  ['DB 22 (SD30/SD40)',2.984,3.801,1.15,1.15],['DB 25 (SD30/SD40)',3.853,4.908,1.917,1.917],
+  ['DB 28 (SD30/SD40)',4.834,6.157,3.017,3.017],['DB 32 (SD30/SD40)',6.313,8.042,5.147,5.147],
+  ['DB 36 (SD30/SD40)',7.99,10.178,8.245,8.245],['DB 40 (SD30/SD40)',9.865,12.566,12.566,12.566]
+ ],
+ 'Plates (เหล็กแผ่น ต่อกว้าง 1 m)':[
+  ['PL t3 (แถบกว้าง 1 m)',23.55,30,0.225,0.225],['PL t2 (แถบกว้าง 1 m)',15.7,20,0.067,0.067],
+  ['PL t3.2 (แถบกว้าง 1 m)',25.12,32,0.273,0.273],['PL t4.5 (แถบกว้าง 1 m)',35.32,45,0.759,0.759],
+  ['PL t5 (แถบกว้าง 1 m)',39.25,50,1.042,1.042],['PL t6 (แถบกว้าง 1 m)',47.1,60,1.8,1.8],
+  ['PL t7 (แถบกว้าง 1 m)',54.95,70,2.858,2.858],['PL t8 (แถบกว้าง 1 m)',62.8,80,4.267,4.267],
+  ['PL t9 (แถบกว้าง 1 m)',70.65,90,6.075,6.075],['PL t10 (แถบกว้าง 1 m)',78.5,100,8.333,8.333],
+  ['PL t11 (แถบกว้าง 1 m)',86.35,110,11.092,11.092],['PL t12 (แถบกว้าง 1 m)',94.2,120,14.4,14.4],
+  ['PL t12.7 (แถบกว้าง 1 m)',99.69,127,17.07,17.07],['PL t13 (แถบกว้าง 1 m)',102.05,130,18.308,18.308],
+  ['PL t14 (แถบกว้าง 1 m)',109.9,140,22.867,22.867],['PL t15 (แถบกว้าง 1 m)',117.75,150,28.125,28.125],
+  ['PL t16 (แถบกว้าง 1 m)',125.6,160,34.133,34.133],['PL t17 (แถบกว้าง 1 m)',133.45,170,40.942,40.942],
+  ['PL t18 (แถบกว้าง 1 m)',141.3,180,48.6,48.6],['PL t19 (แถบกว้าง 1 m)',149.15,190,57.158,57.158],
+  ['PL t20 (แถบกว้าง 1 m)',157,200,66.667,66.667],['PL t21 (แถบกว้าง 1 m)',164.85,210,77.175,77.175],
+  ['PL t22 (แถบกว้าง 1 m)',172.7,220,88.733,88.733],['PL t23 (แถบกว้าง 1 m)',180.55,230,101.392,101.392],
+  ['PL t24 (แถบกว้าง 1 m)',188.4,240,115.2,115.2],['PL t25 (แถบกว้าง 1 m)',196.25,250,130.208,130.208],
+  ['PL t25.4 (แถบกว้าง 1 m)',199.39,254,136.559,136.559],['PL t26 (แถบกว้าง 1 m)',204.1,260,146.467,146.467],
+  ['PL t27 (แถบกว้าง 1 m)',211.95,270,164.025,164.025],['PL t28 (แถบกว้าง 1 m)',219.8,280,182.933,182.933],
+  ['PL t29 (แถบกว้าง 1 m)',227.65,290,203.242,203.242],['PL t30 (แถบกว้าง 1 m)',235.5,300,225,225],
+  ['PL t32 (แถบกว้าง 1 m)',251.2,320,273.067,273.067],['PL t34 (แถบกว้าง 1 m)',266.9,340,327.533,327.533],
+  ['PL t36 (แถบกว้าง 1 m)',282.6,360,388.8,388.8],['PL t38 (แถบกว้าง 1 m)',298.3,380,457.267,457.267],
+  ['PL t40 (แถบกว้าง 1 m)',314,400,533.333,533.333],['PL t45 (แถบกว้าง 1 m)',353.25,450,759.375,759.375],
+  ['PL t50 (แถบกว้าง 1 m)',392.5,500,1041.67,1041.67],['PL t55 (แถบกว้าง 1 m)',431.75,550,1386.46,1386.46],
+  ['PL t60 (แถบกว้าง 1 m)',471,600,1800,1800],['PL t65 (แถบกว้าง 1 m)',510.25,650,2288.54,2288.54],
+  ['PL t70 (แถบกว้าง 1 m)',549.5,700,2858.33,2858.33]
+ ],
+ 'Checkered Plates (ต่อกว้าง 1 m)':[
+  ['CHK t2.3 (ลายกันลื่น กว้าง 1 m)',19.73,23,0.101,0.101],['CHK t3.2 (ลายกันลื่น กว้าง 1 m)',26.79,32,0.273,0.273],
+  ['CHK t4.5 (ลายกันลื่น กว้าง 1 m)',36.99,45,0.759,0.759],['CHK t6 (ลายกันลื่น กว้าง 1 m)',48.77,60,1.8,1.8],
+  ['CHK t8 (ลายกันลื่น กว้าง 1 m)',64.47,80,4.267,4.267],['CHK t9 (ลายกันลื่น กว้าง 1 m)',72.32,90,6.075,6.075],
+  ['CHK t10 (ลายกันลื่น กว้าง 1 m)',80.17,100,8.333,8.333]
+ ],
+ 'Steel Sheet Piles (เข็มพืด)':[
+  ['SP-III (ต่อแผ่น w=400)',60,76.42,2220,2220],['SP-III (ต่อกว้าง 1 m)',150,191.05,16800,16800],
+  ['SP-IV (ต่อแผ่น w=400)',76.1,96.99,4670,4670],['SP-IV (ต่อกว้าง 1 m)',190,242.475,38600,38600]
  ]
 };
 function openSteelTableDlg(){
@@ -2855,7 +3194,7 @@ function openSteelTableDlg(){
     '<div class="prow"><label>แกนดัด</label><select id="stAxis"><option value="x">แกนแข็ง (Ix)</option><option value="y">แกนอ่อน (Iy)</option></select></div>'+
     '<div class="prow"><label>วัสดุ</label><select id="stMat">'+model.materials.map(mt=>'<option value="'+mt.id+'">'+mt.name+'</option>').join('')+'</select></div>'+
     '<div id="stInfo" class="pnote" style="font-size:12px;border:1px solid var(--bord);border-radius:4px;padding:8px;background:#f7f9fc"></div>'+
-    '<div class="pnote">ข้อมูลหน้าตัดตามตารางเหล็กไทย มอก.1227-2558 (รีดร้อน) และ มอก.1228 (ตัวซีขึ้นรูปเย็น)<br>เลือกแล้วกดตกลง → เพิ่มเป็นหน้าตัดใหม่ในรายการ Sections ทันที</div>';
+    '<div class="pnote">ข้อมูลจากตารางเหล็ก TIS/JIS (มอก.1227, มอก.1228, JIS G3192/G3101/G3466/G3444) รวม 15 ประเภท<br>เหล็กแผ่น/เหล็กแบน/เพลา: I คำนวณจากรูปทรง • ท่อกลม/เหล็กกล่องจัตุรัส: Ix = Iy<br>เลือกแล้วกดตกลง → เพิ่มเป็นหน้าตัดใหม่ในรายการ Sections ทันที</div>';
   dlg('🏗 ตารางเหล็กไทย (Steel Table) — เพิ่มหน้าตัด', body, ()=>{
     const g=grps[+$('stGrp').value];
     const it=STEEL_TABLE[g][+$('stSize').value];
@@ -2896,7 +3235,12 @@ function wizMem(a,b,sec,type){
   model.members.push(m); return m.id;
 }
 function wizNLoad(node,fy,lc){ if(!fy)return; model.nodeLoads.push({id:model.nl++,node,fx:0,fy:-Math.abs(fy),mz:0,lc}); }
-function wizULoad(mem,w,lc){ if(!w||!mem)return; model.memberLoads.push({id:model.nl++,member:mem,kind:'udl',dir:'GY',val:-Math.abs(w),a:0,lc}); }
+function wizULoad(mem,w,lc,dir){ if(!w||!mem)return; dir=dir||'GY';
+  model.memberLoads.push({id:model.nl++,member:mem,kind:'udl',dir,val:dir==='GY'?-Math.abs(w):w,a:0,lc}); }
+function wizLoadList(p){
+  return (p.loads&&p.loads.length)?p.loads:[{lc:1,w:(p.wDL||0),dir:'GY'},{lc:2,w:(p.wLL||0),dir:'GY'}];
+}
+function wizLoadsOn(mid,p){ for(const ld of wizLoadList(p)) wizULoad(mid,ld.w,ld.lc,ld.dir||'GY'); }
 function wizReset(){
   model.nodes=[]; model.members=[]; model.nodeLoads=[]; model.memberLoads=[];
   model.nn=1; model.nm=1; model.nl=1;
@@ -2907,35 +3251,6 @@ function addBuiltUpSection(name,mat,bf,tf,hw,tw){
   sectionCalc(s); model.sections.push(s); return s.id;
 }
 /* ---------- generators (m, kN) ---------- */
-function genTruss(p){
-  const n=Math.max(2,Math.round(p.n/2)*2), dx=p.S/n;
-  const prof={
-    box:t=>1, gable:t=>1-Math.abs(2*t-1), half:t=>t,
-    scissor:t=>1-Math.abs(2*t-1),
-    gambrel:t=>{ const pts=[[0,0],[0.25,0.8],[0.5,1],[0.75,0.8],[1,0]];
-      for(let i=1;i<pts.length;i++) if(t<=pts[i][0]+1e-9){ const f=(t-pts[i-1][0])/(pts[i][0]-pts[i-1][0]); return pts[i-1][1]+(pts[i][1]-pts[i-1][1])*f; } return 0; }
-  }[p.tmpl]||(t=>1);
-  const topY=x=>p.heel+(p.H-p.heel)*prof(x/p.S);
-  const botY=x=>p.tmpl==='scissor'?Math.max(0,(p.H-p.heel)*0.5*(1-Math.abs(2*x/p.S-1))):0;
-  const bot=[],top=[];
-  for(let i=0;i<=n;i++){
-    const x=i*dx;
-    bot.push(wizNode(x,botY(x), i===0?'pin':(i===n?'roller':null)));
-    const ty=topY(x);
-    top.push(Math.abs(ty-botY(x))<1e-6?bot[i]:wizNode(x,ty));
-  }
-  for(let i=0;i<n;i++){ wizMem(bot[i],bot[i+1],p.sec,'truss'); wizMem(top[i],top[i+1],p.sec,'truss'); }
-  for(let i=0;i<=n;i++) if(top[i]!==bot[i]) wizMem(bot[i],top[i],p.sec,'truss');
-  for(let i=0;i<n;i++){
-    if(i<n/2) wizMem(bot[i],top[i+1],p.sec,'truss');
-    else wizMem(bot[i+1],top[i],p.sec,'truss');
-  }
-  for(let i=0;i<=n;i++){
-    const f=(i===0||i===n)?0.5:1;
-    wizNLoad(top[i],(p.wDL||0)*dx*f,1);
-    wizNLoad(top[i],(p.wLL||0)*dx*f,2);
-  }
-}
 function genFrame(p){
   for(let i=0;i<=p.bays;i++){
     let prev=wizNode(i*p.W,0,p.base);
@@ -2944,7 +3259,7 @@ function genFrame(p){
   for(let j=1;j<=p.st;j++) for(let i=0;i<p.bays;i++){
     const a=wizNode(i*p.W,j*p.Hs), b=wizNode((i+1)*p.W,j*p.Hs);
     const mid=wizMem(a,b,p.beamSec,'frame');
-    wizULoad(mid,p.wDL,1); wizULoad(mid,p.wLL,2);
+    wizLoadsOn(mid,p);
   }
 }
 function genBeam(p){
@@ -2952,7 +3267,7 @@ function genBeam(p){
   for(let i=1;i<=p.spans;i++){
     const nd=wizNode(i*p.L,0,'roller');
     const mid=wizMem(prev,nd,p.sec,'frame');
-    wizULoad(mid,p.wDL,1); wizULoad(mid,p.wLL,2);
+    wizLoadsOn(mid,p);
     prev=nd;
   }
 }
@@ -2966,7 +3281,7 @@ function genPEB(p){
       const t=k/p.segs;
       const id2=(k===p.segs)?bId:wizNode(na.x+(nb.x-na.x)*t, na.y+(nb.y-na.y)*t);
       const mid=wizMem(prev,id2,p.rafSec,'frame');
-      wizULoad(mid,p.wDL,1); wizULoad(mid,p.wLL,2);
+      wizLoadsOn(mid,p);
       prev=id2;
     }
   };
@@ -2977,10 +3292,30 @@ function genPEB(p){
 /* ---------- read params / live preview ---------- */
 function readWzParams(){
   const type=$('wzType').value;
-  const p={type, wDL:Math.abs(iW(num($('wzDL')))), wLL:Math.abs(iW(num($('wzLL'))))};
+  const p={type};
+  p.loads=[...document.querySelectorAll('#wzLTb tr')].map(tr=>{
+    const wd=parseFloat(tr.querySelector('.wzLw').value)||0;
+    return {lc:+tr.querySelector('.wzLc').value, wd, w:iW(wd), dir:tr.querySelector('.wzLd').value};
+  });
+  const g1=p.loads.find(l=>l.dir!=='GX'&&l.lc===model.loadCases[0].id);
+  const g2=model.loadCases[1]?p.loads.find(l=>l.dir!=='GX'&&l.lc===model.loadCases[1].id):null;
+  p.wDL=Math.abs(g1?g1.w:0); p.wLL=Math.abs(g2?g2.w:0);
   if(type==='truss'){
-    Object.assign(p,{tmpl:$('wtTmpl').value,S:Math.max(1,num($('wtS'),12)),H:Math.max(0.2,num($('wtH'),2.4)),n:Math.max(2,num($('wtN'),8)),heel:Math.max(0,num($('wtHeel'))),sec:+$('wtSec').value});
-    if(p.tmpl==='scissor'&&p.heel<=0)p.heel=0.3*p.H;
+    const lib=(typeof TRUSS_LIB!=='undefined'?TRUSS_LIB.find(t2=>t2.k===$('wtKey').value):null)||{k:'howe',prof:'gable',web:'pv',pat:'howe'};
+    Object.assign(p,{key:lib.k, prof:lib.prof, cant:!!lib.cant, web:$('wtWeb').value,
+      S:Math.max(1,num($('wtS'),12)),H:Math.max(0.2,num($('wtH'),2.4)),n:Math.max(2,num($('wtN'),8)),
+      heelL:Math.max(0,num($('wtHeelL'))), heelR:Math.max(0,num($('wtHeelR'))),
+      ovL:Math.max(0,num($('wtOvL'))), ovR:Math.max(0,num($('wtOvR'))),
+      belly:Math.max(0,num($('wtBelly'))),
+      hd:Math.max(0,num($('wtHd'))),
+      sups:($('wtSups').value||'').split(/[,\s]+/).map(x=>parseInt(x,10)).filter(x=>isFinite(x)&&x>0),
+      secT:+$('wtSecT').value, secB:+$('wtSecB').value, secV:+$('wtSecV').value, secD:+$('wtSecD').value,
+      sec:+$('wtSecT').value});
+    const PAT={pratt:['right','left'], howe:['left','right'], right:['right','right'], left:['left','left']};
+    const pp=PAT[$('wtDiagPat').value]||PAT.pratt;
+    p.diagL=pp[0]; p.diagR=pp[1];
+    if(lib.prof==='scissor'&&p.heelL<=0&&p.heelR<=0){ p.heelL=0.3*p.H; p.heelR=0.3*p.H; }
+    p.heel=(p.heelL+p.heelR)/2;
   } else if(type==='frame'){
     Object.assign(p,{bays:Math.max(1,Math.round(num($('wfBays'),3))),st:Math.max(1,Math.round(num($('wfSt'),4))),W:Math.max(1,num($('wfW'),6)),Hs:Math.max(1,num($('wfHs'),3.5)),colSec:+$('wfColSec').value,beamSec:+$('wfBeamSec').value,base:$('wfBase').value});
   } else if(type==='beam'){
@@ -3011,14 +3346,14 @@ function drawWzPreview(){
   const g=c.getContext('2d');
   g.clearRect(0,0,c.width,c.height);
   g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height);
-  let d;
-  try{ d=wizPreviewData(readWzParams()); }catch(e){ return; }
+  let d,p;
+  try{ p=readWzParams(); d=wizPreviewData(p); }catch(e){ return; }
   if(!d.nodes.length){ g.fillStyle='#888'; g.font='12px Segoe UI'; g.fillText('— ไม่มีข้อมูล —',20,30); return; }
   let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
   d.nodes.forEach(n=>{x0=Math.min(x0,n.x);x1=Math.max(x1,n.x);y0=Math.min(y0,n.y);y1=Math.max(y1,n.y);});
   const dx=Math.max(x1-x0,1),dy=Math.max(y1-y0,1);
-  const sc=Math.min((c.width-70)/dx,(c.height-70)/dy);
-  const ox=(c.width-(x0+x1)*sc)/2, oy=(c.height+(y0+y1)*sc)/2-8;
+  const sc=Math.min((c.width-80)/dx,(c.height-88)/dy);
+  const ox=(c.width-(x0+x1)*sc)/2, oy=(c.height+(y0+y1)*sc)/2-16;
   const P=(x,y)=>[ox+x*sc, oy-y*sc];
   const nm={}; d.nodes.forEach(n=>nm[n.id]=n);
   /* members */
@@ -3036,15 +3371,42 @@ function drawWzPreview(){
     g.beginPath(); g.moveTo(sx,sy); g.lineTo(sx-6,sy+10); g.lineTo(sx+6,sy+10); g.closePath(); g.fill();
     if(n.sup==='roller'){ g.beginPath(); g.arc(sx-3,sy+13,2,0,7); g.arc(sx+3,sy+13,2,0,7); g.fill(); }
   }
+  /* หมายเลข Node / Member อัตโนมัติ */
+  if(d.members.length<=160){
+    g.font='8.5px Segoe UI';
+    for(const m of d.members){
+      const a=nm[m.ni],b=nm[m.nj]; if(!a||!b)continue;
+      const [ax,ay]=P(a.x,a.y),[bx,by]=P(b.x,b.y);
+      g.fillStyle='#7a3fd0';
+      g.fillText('M'+m.id,(ax+bx)/2+2,(ay+by)/2-2);
+    }
+  }
+  if(d.nodes.length<=90){
+    g.font='700 8.5px Segoe UI';
+    for(const n of d.nodes){
+      const [sx,sy]=P(n.x,n.y);
+      g.fillStyle='#22252c'; g.fillRect(sx-1.6,sy-1.6,3.2,3.2);
+      g.fillStyle='#1e62d0'; g.fillText(String(n.id),sx+3.5,sy+9.5);
+    }
+  }
   /* DL loads preview (red) */
   g.strokeStyle='#d02020'; g.fillStyle='#d02020'; g.lineWidth=1.1;
-  for(const l of d.nodeLoads.filter(l2=>l2.lc===1)){
+  const seenN=new Set();
+  for(const l of d.nodeLoads){
+    const kk=l.node+(l.fx?'x':'y'); if(seenN.has(kk))continue; seenN.add(kk);
     const n=nm[l.node]; if(!n)continue;
     const [sx,sy]=P(n.x,n.y);
-    g.beginPath(); g.moveTo(sx,sy-17); g.lineTo(sx,sy-4); g.stroke();
-    g.beginPath(); g.moveTo(sx,sy-2); g.lineTo(sx-3,sy-8); g.lineTo(sx+3,sy-8); g.closePath(); g.fill();
+    if(l.fx){
+      g.beginPath(); g.moveTo(sx-18,sy); g.lineTo(sx-5,sy); g.stroke();
+      g.beginPath(); g.moveTo(sx-3,sy); g.lineTo(sx-9,sy-3); g.lineTo(sx-9,sy+3); g.closePath(); g.fill();
+    } else {
+      g.beginPath(); g.moveTo(sx,sy-17); g.lineTo(sx,sy-4); g.stroke();
+      g.beginPath(); g.moveTo(sx,sy-2); g.lineTo(sx-3,sy-8); g.lineTo(sx+3,sy-8); g.closePath(); g.fill();
+    }
   }
-  for(const l of d.memberLoads.filter(l2=>l2.lc===1)){
+  const seenM=new Set();
+  for(const l of d.memberLoads){
+    if(seenM.has(l.member))continue; seenM.add(l.member);
     const m=d.members.find(mm=>mm.id===l.member); if(!m)continue;
     const a=nm[m.ni],b=nm[m.nj]; if(!a||!b)continue;
     const [ax,ay]=P(a.x,a.y),[bx,by]=P(b.x,b.y);
@@ -3055,17 +3417,100 @@ function drawWzPreview(){
       g.beginPath(); g.moveTo(px,py-13); g.lineTo(px,py-3); g.stroke();
     }
   }
-  /* dims */
-  g.fillStyle='#555'; g.font='10px Segoe UI';
-  const [dax,day]=P(x0,y0),[dbx]=P(x1,y0);
-  g.fillText(fmt(x1-x0,2)+' m',(dax+dbx)/2-14,Math.min(day+26,c.height-18));
-  g.save(); g.translate(12,(P(0,y0)[1]+P(0,y1)[1])/2); g.rotate(-Math.PI/2);
-  g.fillText(fmt(y1-y0,2)+' m',-14,0); g.restore();
+  /* dimension line + subdivision ticks + counts */
+  let dimTxt='กว้าง '+fmt(x1-x0,2)+' m', dimTxt2='สูง '+fmt(y1-y0,2)+' m', sub=1;
+  if(p.type==='truss'){ const nn2=Math.max(2,Math.round(p.n/2)*2); sub=nn2;
+    dimTxt='S = '+fmt(p.S,2)+' m  ('+nn2+' ช่อง @ '+fmt(p.S/nn2,2)+' m)';
+    dimTxt2='H = '+fmt(p.H,2)+' m'; }
+  else if(p.type==='frame'){ sub=p.bays;
+    dimTxt=p.bays+' ช่วง @ '+fmt(p.W,2)+' m  = '+fmt(p.bays*p.W,2)+' m';
+    dimTxt2=p.st+' ชั้น @ '+fmt(p.Hs,2)+' m = '+fmt(p.st*p.Hs,2)+' m'; }
+  else if(p.type==='beam'){ sub=p.spans;
+    dimTxt=p.spans+' ช่วง @ '+fmt(p.L,2)+' m  = '+fmt(p.spans*p.L,2)+' m'; dimTxt2=''; }
+  else { sub=2;
+    dimTxt='Span = '+fmt(p.S,2)+' m'; dimTxt2='Eave '+fmt(p.He,2)+' / Ridge '+fmt(p.Hr,2)+' m'; }
+  const ybase=Math.max(P(0,y0)[1],P(0,0)[1]);
+  const yb=Math.min(ybase+24,c.height-22);
+  const bxA=P(x0,0)[0], bxB=P(x1,0)[0];
+  g.strokeStyle='#666'; g.lineWidth=1;
+  g.beginPath(); g.moveTo(bxA,yb); g.lineTo(bxB,yb); g.stroke();
+  for(let i=0;i<=sub;i++){
+    const X=bxA+(bxB-bxA)*i/sub;
+    g.beginPath(); g.moveTo(X,yb-4); g.lineTo(X,yb+4); g.stroke();
+  }
+  g.fillStyle='#333'; g.font='600 10.5px Segoe UI';
+  g.fillText(dimTxt,(bxA+bxB)/2-g.measureText(dimTxt).width/2, Math.min(yb+14,c.height-8));
+  if(p.type==='truss'){
+    /* เส้นบอกระยะดิ่งเต็มช่วง (คอร์ดล่างสุด → ยอดสูงสุด) — ทุกรูปแบบ truss */
+    const xd=Math.max(15,P(x0,0)[0]-32);
+    const yA=P(0,y0)[1], yB=P(0,y1)[1];
+    g.strokeStyle='#1e62d0'; g.lineWidth=1.3;
+    g.beginPath(); g.moveTo(xd,yA); g.lineTo(xd,yB); g.stroke();
+    g.fillStyle='#1e62d0';
+    g.beginPath(); g.moveTo(xd,yB); g.lineTo(xd-4,yB+9); g.lineTo(xd+4,yB+9); g.closePath(); g.fill();
+    g.beginPath(); g.moveTo(xd,yA); g.lineTo(xd-4,yA-9); g.lineTo(xd+4,yA-9); g.closePath(); g.fill();
+    g.lineWidth=1;
+    g.beginPath(); g.moveTo(xd-5,yA); g.lineTo(xd+16,yA); g.moveTo(xd-5,yB); g.lineTo(xd+16,yB); g.stroke();
+    g.save(); g.translate(xd-7,(yA+yB)/2); g.rotate(-Math.PI/2);
+    g.font='700 10.5px Segoe UI';
+    const t2='H = '+fmt(y1-y0,2)+' m';
+    g.fillText(t2,-g.measureText(t2).width/2,0); g.restore();
+  } else if(dimTxt2){
+    g.save(); g.translate(13,(P(0,y0)[1]+P(0,y1)[1])/2); g.rotate(-Math.PI/2);
+    g.fillText(dimTxt2,-g.measureText(dimTxt2).width/2,0); g.restore();
+  }
+  /* end-height (heel) dimension lines for truss — ตามรูป */
+  if(p.type==='truss'){
+    const vd=(X,hv,side)=>{
+      if(!hv||hv<=1e-9)return;
+      const xd=X+side*15;
+      const yA=P(0,0)[1], yB=P(0,hv)[1];
+      g.strokeStyle='#1e62d0'; g.lineWidth=1;
+      g.beginPath(); g.moveTo(xd,yA); g.lineTo(xd,yB); g.stroke();
+      g.beginPath(); g.moveTo(xd-3,yA); g.lineTo(xd+3,yA); g.moveTo(xd-3,yB); g.lineTo(xd+3,yB); g.stroke();
+      g.fillStyle='#1e62d0'; g.font='600 9.5px Segoe UI';
+      const txt=fmt(hv,2);
+      g.fillText(txt, side>0?xd+4:xd-4-g.measureText(txt).width, (yA+yB)/2+3);
+    };
+    const endH=X=>{ let m2=0; for(const n2 of d.nodes) if(Math.abs(n2.x-X)<1e-6) m2=Math.max(m2,n2.y); return m2; };
+    vd(P(0,0)[0], endH(0), -1);
+    vd(P(p.S,0)[0], endH(p.S), 1);
+    /* ระยะยกท้องกลางช่วง (เส้นอ้างอิงประ + ลูกศร) */
+    const midX=(x0+x1)/2;
+    let bmid=1e9;
+    for(const n2 of d.nodes) if(Math.abs(n2.x-midX)<1e-6) bmid=Math.min(bmid,n2.y);
+    if(bmid<1e9&&bmid>0.02){
+      const yA=P(0,0)[1], yB=P(0,bmid)[1], Xm=P(midX,0)[0];
+      g.strokeStyle='#0a8ad0'; g.lineWidth=1.4; g.setLineDash([6,4]);
+      g.beginPath(); g.moveTo(P(x0,0)[0],yA); g.lineTo(P(x1,0)[0],yA); g.stroke();
+      g.setLineDash([]);
+      g.beginPath(); g.moveTo(Xm,yA); g.lineTo(Xm,yB); g.stroke();
+      g.fillStyle='#0a8ad0';
+      g.beginPath(); g.moveTo(Xm,yB); g.lineTo(Xm-4,yB+8); g.lineTo(Xm+4,yB+8); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(Xm,yA); g.lineTo(Xm-4,yA-8); g.lineTo(Xm+4,yA-8); g.closePath(); g.fill();
+      g.font='700 10px Segoe UI';
+      g.fillText('ท้อง '+fmt(bmid,2)+' m',Xm+6,(yA+yB)/2+3);
+    }
+  }
+  /* storey ticks for frame */
+  if(p.type==='frame'){
+    const xl=bxA-14;
+    g.strokeStyle='#666';
+    g.beginPath(); g.moveTo(xl,P(0,0)[1]); g.lineTo(xl,P(0,p.st*p.Hs)[1]); g.stroke();
+    for(let j=0;j<=p.st;j++){ const Y=P(0,j*p.Hs)[1]; g.beginPath(); g.moveTo(xl-4,Y); g.lineTo(xl+4,Y); g.stroke(); }
+  }
   g.fillStyle='#1e62d0'; g.font='600 10.5px Segoe UI';
   g.fillText('ตัวอย่าง (อัปเดตอัตโนมัติ): '+d.nodes.length+' Node • '+d.members.length+' Member • แรง '+(d.nodeLoads.length+d.memberLoads.length)+' รายการ', 8, 14);
 }
 /* ---------- wizard dialog ---------- */
 function secOpts(sel){ return model.sections.map(s=>'<option value="'+s.id+'"'+(sel===s.id?' selected':'')+'>'+s.name+'</option>').join(''); }
+function WZLROW(ld){
+  return '<tr>'+
+    '<td><select class="wzLc">'+model.loadCases.map(c=>'<option value="'+c.id+'"'+(ld.lc===c.id?' selected':'')+'>'+c.name+'</option>').join('')+'</select></td>'+
+    '<td><input type="number" class="wzLw" value="'+(ld.wd!==undefined?ld.wd:0)+'" step="10" style="width:92px"></td>'+
+    '<td><select class="wzLd">'+[['GY','↓ ดิ่งลง (Global Y)'],['GX','→ แนวราบ (Global X)'],['LY','⊥ ตั้งฉาก member (Local y)']].map(o=>'<option value="'+o[0]+'"'+((ld.dir||'GY')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></td>'+
+    '<td style="text-align:center"><button type="button" class="rowdel wzLdel" title="ลบแถวนี้ (Delete Row)">🗑</button></td></tr>';
+}
 function openWizardDlg(){
   const w=model.wizard||{};
   const u=U();
@@ -3079,12 +3524,35 @@ function openWizardDlg(){
     '</select><span style="flex:1"></span><button class="tbtn" id="wzPrint" type="button">🖨 พิมพ์ตัวอย่าง</button></div>'+
     '<canvas id="wzPrev" width="660" height="235" style="width:100%;border:1px solid #ccd0da;border-radius:4px;background:#fff;margin:4px 0"></canvas>'+
     '<div id="wzTruss">'+
-      '<div class="prow"><label>แบบ Truss</label><select id="wtTmpl">'+
-        [['box','Box / Parallel Chord (Pratt)'],['gable','Gable Truss (จั่ว)'],['half','Half Gable (เพิงแหงน)'],['scissor','Scissor Truss'],['gambrel','Gambrel Truss']]
-        .map(o=>'<option value="'+o[0]+'"'+((w.tmpl||'gable')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>'+
-      fld('wtS','ช่วงกว้าง S (m)',w.S&&w.type==='truss'?w.S:12)+fld('wtH','ความสูง H (m)',w.H||2.4,0.1)+
-      fld('wtN','จำนวนช่อง (คู่)',w.n||8,2)+fld('wtHeel','ความสูงปลาย heel (m)',w.heel||0,0.1)+
-      '<div class="prow"><label>หน้าตัด</label><select id="wtSec">'+secOpts(w.sec)+'</select></div>'+
+      '<div class="pnote" style="font-weight:700;color:var(--acc)">เลือกรูปแบบโครงหลังคาที่ต้องการ (คลิกรูป)</div>'+
+      '<input type="hidden" id="wtKey" value="'+(w.key||({box:'warren',gable:'howe',half:'mono',scissor:'scis',gambrel:'gambrel'})[w.tmpl]||'howe')+'">'+
+      '<div id="wtGal"></div>'+
+      fld('wtS','ช่วงกว้าง S (m)',w.S&&w.type==='truss'?w.S:12)+fld('wtH','ความสูงสัน H (m)',w.H||2.4,0.1)+
+      fld('wtN','จำนวนช่อง (คู่)',w.n||8,2)+
+      fld('wtHeelL','สูงปลายซ้าย heel L (m)',(w.heelL!==undefined?w.heelL:(w.heel||0)),0.1)+
+      fld('wtHeelR','สูงปลายขวา heel R (m)',(w.heelR!==undefined?w.heelR:(w.heel||0)),0.1)+
+      fld('wtOvL','ยื่นชายคาซ้าย (m)',w.ovL||0,0.1)+
+      fld('wtOvR','ยื่นชายคาขวา (m)',w.ovR||0,0.1)+
+      fld('wtBelly','ยกท้องกลางช่วง (m)',w.belly||0,0.1)+
+      fld('wtHd','ความลึกปลาย hd (m) — 0 = อัตโนมัติ',w.hd||0,0.1)+
+      '<div class="prow"><label>Support ที่ Node</label><input type="text" id="wtSups" value="'+((w.sups&&w.sups.length)?w.sups.join(','):'')+'" placeholder="เช่น 2,16 — เว้นว่าง = อัตโนมัติ (ปลาย 2 ข้าง)" style="flex:1"></div>'+
+      '<div class="prow"><label>ลายเว็บ (Web)</label><select id="wtWeb">'+
+        [['pv','ตั้ง + ทแยง (Pratt/Howe)'],['warren','Warren — ซิกแซก'],['mwarren','Modified Warren — ซิกแซก + ตั้ง'],['fan','Fan / Fink — ทแยงคู่ + ตั้ง']]
+        .map(o=>'<option value="'+o[0]+'"'+((w.web||'pv')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>'+
+      '<div class="prow" id="wtDiagRow"><label>รูปแบบทแยง</label><select id="wtDiagPat">'+
+        (function(){
+          const cur=((w.diagL||'right')+'|'+(w.diagR||'left'));
+          return [['right|left','pratt','⟋ ⟍  Pratt — ชี้เข้าหากลาง'],
+                  ['left|right','howe','⟍ ⟋  Howe — ชี้ออกจากกลาง'],
+                  ['right|right','right','⟋ ⟋  เอียงขวาทางเดียว'],
+                  ['left|left','left','⟍ ⟍  เอียงซ้ายทางเดียว']]
+            .map(o=>'<option value="'+o[1]+'"'+(cur===o[0]?' selected':'')+'>'+o[2]+'</option>').join('');
+        })()+'</select></div>'+
+      '<div class="prow"><label>หน้าตัด บน (Upper)</label><select id="wtSecT">'+secOpts(w.secT||w.sec)+'</select></div>'+
+      '<div class="prow"><label>หน้าตัด ล่าง (Lower)</label><select id="wtSecB">'+secOpts(w.secB||w.sec)+'</select></div>'+
+      '<div class="prow"><label>หน้าตัด ตั้ง (Vertical)</label><select id="wtSecV">'+secOpts(w.secV||w.sec)+'</select></div>'+
+      '<div class="prow"><label>หน้าตัด ทแยง (Diagonal)</label><select id="wtSecD">'+secOpts(w.secD||w.sec)+'</select></div>'+
+      '<div class="prow"><label>➕ หน้าตัดเหล็กไทย</label><select id="wtStG" style="max-width:145px">'+Object.keys(STEEL_TABLE).map((g,i2)=>'<option value="'+i2+'">'+g+'</option>').join('')+'</select><select id="wtStS" style="flex:1"></select><button type="button" class="tbtn" id="wtStAdd">เพิ่ม</button></div>'+
     '</div>'+
     '<div id="wzFrame">'+
       fld('wfBays','จำนวนช่วงเสา (bays)',w.bays||3,1)+fld('wfSt','จำนวนชั้น',w.st||4,1)+
@@ -3106,9 +3574,18 @@ function openWizardDlg(){
       '<div class="prow"><label>หน้าตัดจันทัน</label><select id="wpRafSec">'+secOpts(w.rafSec)+'</select></div></div>'+
     '</div>'+
     '<div class="msep" style="margin:6px 0"></div>'+
-    fld('wzDL','น้ำหนัก DL ('+u.wname+')',w.wDLd!==undefined?w.wDLd:10,1)+
-    fld('wzLL','น้ำหนัก LL ('+u.wname+')',w.wLLd!==undefined?w.wLLd:5,1)+
-    '<div class="prow"><input type="checkbox" id="wzClear" checked><label style="flex:1">ล้างโมเดลเดิมก่อนสร้าง (ไม่ล้าง วัสดุ/หน้าตัด/Load Case)</label></div>'+
+    '<div id="wtStPick" style="display:none;border:1.5px solid var(--acc);border-radius:5px;padding:8px;margin:4px 0;background:#f4f8ff">'+
+      '<div id="stpInfo" style="font:700 12px Segoe UI;color:var(--acc);margin-bottom:4px"></div>'+
+      '<div class="prow"><label>ประเภท</label><select id="stpGrp" style="max-width:175px"></select><select id="stpSize" style="flex:1"></select></div>'+
+      '<div class="prow"><button type="button" class="tbtn" id="stpUse" style="color:#0a7a2f;font-weight:700">✔ ใช้หน้าตัดนี้ (เพิ่มเข้ารายการ)</button><button type="button" class="tbtn" id="stpCancel">ยกเลิก</button></div>'+
+    '</div>'+
+    '<div style="font:600 12px Segoe UI;color:var(--acc);margin:2px 0 3px">🏋 น้ำหนักบรรทุก (Load) — เพิ่มได้หลายรายการ</div>'+
+    '<table class="sheet"><thead><tr><th>Load Case</th><th>ค่า w ('+u.wname+')</th><th>ทิศทาง Load</th><th>ลบแถว</th></tr></thead><tbody id="wzLTb">'+
+    (w.loads&&w.loads.length?w.loads:[{lc:model.loadCases[0].id,wd:(w.wDLd!==undefined?w.wDLd:0),dir:'GY'},{lc:(model.loadCases[1]||model.loadCases[0]).id,wd:(w.wLLd!==undefined?w.wLLd:0),dir:'GY'}]).map(ld=>WZLROW(ld)).join('')+
+    '</tbody></table>'+
+    '<button type="button" class="tbtn" id="wzLAdd" style="margin:3px 0 6px;color:#0a7a2f;font-weight:600">➕ เพิ่มแถว Load (Add Row)</button>'+
+    '<div class="pnote" style="margin:0 0 4px">↓ GY = แรงดิ่งลง (ใส่ค่าลบ = ยกขึ้น เช่นลมดูด) • → GX = แรงแนวราบ เช่นแรงลม • ⊥ LY = ตั้งฉากกับ member • Truss: ทุกทิศแปลงเป็นแรงจุดที่ปม top chord</div>'+
+'<div class="prow"><input type="checkbox" id="wzClear" checked><label style="flex:1">ล้างโมเดลเดิมก่อนสร้าง (ไม่ล้าง วัสดุ/หน้าตัด/Load Case)</label></div>'+
     '<div class="pnote">รูปตัวอย่างด้านบนอัปเดตอัตโนมัติทุกครั้งที่แก้ค่า — พอใจแล้วกด <b>ตกลง</b> เพื่อสร้างจริง แล้วกด ▶ วิเคราะห์<br>Truss: แรงแปลงเป็นแรงจุดที่ปม top chord • Frame/Beam/PEB: UDL บนคาน/จันทัน (DL→case 1, LL→case 2) • สร้างแล้วแก้ไขต่อได้ทุกส่วน</div>';
   dlg('🧙 Structure Wizard — สร้างโครงสร้างอัตโนมัติ (พร้อมภาพตัวอย่าง)', body, ()=>{
     const p=readWzParams();
@@ -3125,7 +3602,6 @@ function openWizardDlg(){
       } else { p.colSec=+$('wpColSec').value; p.rafSec=+$('wpRafSec').value; }
       genPEB(p);
     }
-    p.wDLd=num($('wzDL')); p.wLLd=num($('wzLL'));
     model.wizard=p;
     invalidate(); renderAll(); fitView();
     setMsg('🧙 สร้างโครงสร้างแล้ว: '+model.nodes.length+' Node, '+model.members.length+' Member — กด ▶ วิเคราะห์ได้เลย');
@@ -3138,10 +3614,76 @@ function openWizardDlg(){
     $('wzBeam').style.display=t==='beam'?'':'none';
     $('wzPeb').style.display=t==='peb'?'':'none';
     const bu=$('wpBU'); if(bu)$('wpSecRow').style.display=bu.checked?'none':'';
+    const dr=$('wtDiagRow'); if(dr&&$('wtWeb'))dr.style.display=($('wtWeb').value==='pv')?'':'none';
     drawWzPreview();
   };
   $('wzType').onchange=sync;
   $('wpBU').onchange=sync;
+  const wireWzL=tr=>{
+    tr.querySelectorAll('input,select').forEach(el=>{ el.addEventListener('input',drawWzPreview); el.addEventListener('change',drawWzPreview); });
+    const db=tr.querySelector('.wzLdel'); if(db)db.onclick=()=>{ tr.remove(); drawWzPreview(); };
+  };
+  document.querySelectorAll('#wzLTb tr').forEach(wireWzL);
+  $('wzLAdd').onclick=()=>{
+    const tb=$('wzLTb');
+    tb.insertAdjacentHTML('beforeend',WZLROW({lc:model.loadCases[0].id,wd:0,dir:'GY'}));
+    wireWzL(tb.lastElementChild);
+    drawWzPreview();
+  };
+  renderTrussGallery($('wtKey').value);
+  /* 📖 เลือกหน้าตัดจากตารางเหล็กไทยโดยตรงในช่องหน้าตัด */
+  (function(){
+    const targets=['wtSecT','wtSecB','wtSecV','wtSecD','wfColSec','wfBeamSec','wbSec','wpColSec','wpRafSec'];
+    const NM={wtSecT:'หน้าตัด บน (Upper)',wtSecB:'หน้าตัด ล่าง (Lower)',wtSecV:'หน้าตัด ตั้ง (Vertical)',wtSecD:'หน้าตัด ทแยง (Diagonal)',wfColSec:'หน้าตัดเสา',wfBeamSec:'หน้าตัดคาน',wbSec:'หน้าตัดคาน',wpColSec:'หน้าตัดเสา PEB',wpRafSec:'หน้าตัดจันทัน PEB'};
+    const grps=Object.keys(STEEL_TABLE);
+    let tgt=null; const prev={};
+    const OPT='<option value="__steel">📖 เลือกจากตารางเหล็กไทย…</option>';
+    targets.forEach(id=>{
+      const el=$(id); if(!el)return;
+      prev[id]=el.value;
+      el.insertAdjacentHTML('beforeend',OPT);
+      el.addEventListener('change',()=>{
+        if(el.value==='__steel'){
+          tgt=id; el.value=prev[id];
+          $('stpInfo').textContent='เลือกหน้าตัดเหล็กให้: '+NM[id];
+          $('wtStPick').style.display='';
+        } else prev[id]=el.value;
+      });
+    });
+    $('stpGrp').innerHTML=grps.map((g,i2)=>'<option value="'+i2+'">'+g+'</option>').join('');
+    const fillS=()=>{ $('stpSize').innerHTML=STEEL_TABLE[grps[+$('stpGrp').value]].map((it,i2)=>'<option value="'+i2+'">'+it[0]+' ('+it[1]+' kg/m)</option>').join(''); };
+    $('stpGrp').onchange=fillS; fillS();
+    $('stpUse').onclick=()=>{
+      const it=STEEL_TABLE[grps[+$('stpGrp').value]][+$('stpSize').value]; if(!it||!tgt)return;
+      pushUndo();
+      let sec=model.sections.find(s2=>s2.name===it[0]);
+      if(!sec){ sec={id:model.ns++, name:it[0], mat:model.materials[0].id, shape:'general', A:it[2]/1e4, I:it[3]/1e8, steelW:it[1]}; model.sections.push(sec); }
+      targets.forEach(id2=>{ const el2=$(id2); if(!el2)return; const cur=el2.value;
+        el2.innerHTML=secOpts(cur&&cur!=='__steel'?+cur:undefined)+OPT; if(cur&&cur!=='__steel')el2.value=cur; });
+      $(tgt).value=String(sec.id); prev[tgt]=String(sec.id);
+      $('wtStPick').style.display='none';
+      setMsg('📖 ใช้หน้าตัด '+sec.name+' กับ '+NM[tgt]+' แล้ว (เพิ่มเข้ารายการหน้าตัดอัตโนมัติ)');
+      drawWzPreview();
+    };
+    $('stpCancel').onclick=()=>{ $('wtStPick').style.display='none'; };
+  })();
+  $('wtWeb').addEventListener('change',()=>{ $('wtDiagRow').style.display=($('wtWeb').value==='pv')?'':'none'; });
+  (function(){
+    const grps=Object.keys(STEEL_TABLE);
+    const fillS=()=>{ $('wtStS').innerHTML=STEEL_TABLE[grps[+$('wtStG').value]].map((it,i2)=>'<option value="'+i2+'">'+it[0]+' ('+it[1]+' kg/m)</option>').join(''); };
+    $('wtStG').onchange=fillS; fillS();
+    $('wtStAdd').onclick=()=>{
+      const it=STEEL_TABLE[grps[+$('wtStG').value]][+$('wtStS').value]; if(!it)return;
+      pushUndo();
+      model.sections.push({id:model.ns++, name:it[0], mat:model.materials[0].id, shape:'general', A:it[2]/1e4, I:it[3]/1e8, steelW:it[1]});
+      ['wtSecT','wtSecB','wtSecV','wtSecD','wfColSec','wfBeamSec','wbSec','wpColSec','wpRafSec'].forEach(id2=>{
+        const el=$(id2); if(!el)return; const cur=el.value;
+        el.innerHTML=secOpts(cur&&cur!=='__steel'?+cur:undefined)+'<option value="__steel">📖 เลือกจากตารางเหล็กไทย…</option>';
+        if(cur&&cur!=='__steel')el.value=cur;
+      });
+      setMsg('เพิ่มหน้าตัด '+it[0]+' จากตารางเหล็กไทยแล้ว — เลือกใช้ในช่องหน้าตัดได้ทันที');
+    };
+  })();
   $('dlgBody').querySelectorAll('input,select').forEach(el=>{
     if(el.id==='wzType'||el.id==='wpBU')return;
     el.addEventListener('input',drawWzPreview);
@@ -3155,35 +3697,264 @@ function openWizardDlg(){
   };
   sync();
 }
-/* ---------- Built-up I section dialog ---------- */
-function openBuiltUpDlg(secId){
+/* ---------- Parametric section dialog: Built-up I / Box / Angle ---------- */
+function openBuiltUpDlg(secId, defShape){
   const s=secId?model.sections.find(x=>x.id===secId):null;
-  const v=(k,d)=>s&&s[k]!==undefined?s[k]*1000:d;
+  const shape0=s?s.shape:(defShape||'ibuilt');
+  const mm=(k,d)=>s&&s[k]!==undefined?+(s[k]*1000).toFixed(2):d;
   const body=
-    '<div class="prow"><label>ชื่อหน้าตัด</label><input type="text" id="buName" value="'+(s?s.name:'Built-up I')+'"></div>'+
+    '<div class="prow"><label>รูปทรง</label><select id="psShape">'+
+      [['ibuilt','Built-up I (แผ่นประกอบ PEB)'],['box','เหล็กกล่อง B×H×t (Tube)'],['angle','เหล็กฉากขาเท่า L×t (Angle)']]
+      .map(o=>'<option value="'+o[0]+'"'+(shape0===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>'+
+    '<div class="prow"><label>ชื่อหน้าตัด</label><input type="text" id="buName" value="'+(s?s.name:'')+'" placeholder="ตั้งอัตโนมัติถ้าเว้นว่าง"></div>'+
     '<div class="prow"><label>วัสดุ</label><select id="buMat">'+model.materials.map(mt=>'<option value="'+mt.id+'"'+((s?s.mat:model.materials[0].id)===mt.id?' selected':'')+'>'+mt.name+'</option>').join('')+'</select></div>'+
-    '<div class="prow"><label>ปีก bf (mm)</label><input type="number" id="buBf" value="'+v('bf',200)+'" step="10"></div>'+
-    '<div class="prow"><label>หนาปีก tf (mm)</label><input type="number" id="buTf" value="'+v('tf',12)+'" step="1"></div>'+
-    '<div class="prow"><label>เอวสูง hw (mm)</label><input type="number" id="buHw" value="'+v('hw',476)+'" step="10"></div>'+
-    '<div class="prow"><label>หนาเอว tw (mm)</label><input type="number" id="buTw" value="'+v('tw',6)+'" step="1"></div>'+
+    '<div id="psI">'+
+      '<div class="prow"><label>ปีก bf (mm)</label><input type="number" id="buBf" value="'+mm('bf',200)+'" step="10"></div>'+
+      '<div class="prow"><label>หนาปีก tf (mm)</label><input type="number" id="buTf" value="'+mm('tf',12)+'" step="1"></div>'+
+      '<div class="prow"><label>เอวสูง hw (mm)</label><input type="number" id="buHw" value="'+mm('hw',476)+'" step="10"></div>'+
+      '<div class="prow"><label>หนาเอว tw (mm)</label><input type="number" id="buTw" value="'+mm('tw',6)+'" step="1"></div>'+
+    '</div>'+
+    '<div id="psB">'+
+      '<div class="prow"><label>กว้าง B (mm)</label><input type="number" id="bxB" value="'+mm('b',100)+'" step="5"></div>'+
+      '<div class="prow"><label>ลึก H (mm)</label><input type="number" id="bxH" value="'+mm('h',100)+'" step="5"></div>'+
+      '<div class="prow"><label>หนา t (mm)</label><input type="number" id="bxT" value="'+(s&&s.t!==undefined?+(s.t*1000).toFixed(2):3.2)+'" step="0.1"></div>'+
+    '</div>'+
+    '<div id="psA">'+
+      '<div class="prow"><label>ขากว้าง b (mm)</label><input type="number" id="agB" value="'+mm('b',50)+'" step="5"></div>'+
+      '<div class="prow"><label>หนา t (mm)</label><input type="number" id="agT" value="'+(s&&s.t!==undefined?+(s.t*1000).toFixed(2):4)+'" step="0.5"></div>'+
+    '</div>'+
     '<div id="buInfo" class="pnote" style="border:1px solid var(--bord);border-radius:4px;padding:8px;background:#f7f9fc"></div>'+
-    '<div class="pnote">หน้าตัด I ประกอบจากแผ่นเหล็ก (เชื่อม) แบบ PEB — H = hw + 2tf<br>A = 2·bf·tf + hw·tw &nbsp;|&nbsp; I = [bf·H³ − (bf−tw)·hw³] / 12</div>';
-  dlg(s?('แก้ไข Built-up Section: '+s.name):'➕ เพิ่มหน้าตัด Built-up I (แผ่นประกอบ)', body, ()=>{
-    const bf=num($('buBf'),200)/1000, tf=num($('buTf'),12)/1000, hw=num($('buHw'),476)/1000, tw=num($('buTw'),6)/1000;
-    if(bf<=0||tf<=0||hw<=0||tw<=0){ setMsg('ขนาดต้องมากกว่า 0',true); return false; }
+    '<div class="pnote">ค่า A และ I คำนวณอัตโนมัติจากขนาดที่ป้อน (ดัดรอบแกนแข็ง) • เหล็กกล่อง: I=[BH³−(B−2t)(H−2t)³]/12 • เหล็กฉาก: รอบแกนขนานขา ผ่าน centroid</div>';
+  dlg(s?('แก้ไขหน้าตัด: '+s.name):'➕ เพิ่มหน้าตัดพาราเมตริก (Built-up I / กล่อง / ฉาก)', body, ()=>{
+    const shp=$('psShape').value;
+    const tmp={shape:shp};
+    if(shp==='ibuilt'){ tmp.bf=num($('buBf'),200)/1000; tmp.tf=num($('buTf'),12)/1000; tmp.hw=num($('buHw'),476)/1000; tmp.tw=num($('buTw'),6)/1000;
+      if(tmp.bf<=0||tmp.tf<=0||tmp.hw<=0||tmp.tw<=0){ setMsg('ขนาดต้องมากกว่า 0',true); return false; } }
+    else if(shp==='box'){ tmp.b=num($('bxB'),100)/1000; tmp.h=num($('bxH'),100)/1000; tmp.t=num($('bxT'),3.2)/1000;
+      if(tmp.b<=0||tmp.h<=0||tmp.t<=0||2*tmp.t>=Math.min(tmp.b,tmp.h)){ setMsg('ขนาดไม่ถูกต้อง (t ต้องน้อยกว่าครึ่งของด้าน)',true); return false; } }
+    else { tmp.b=num($('agB'),50)/1000; tmp.t=num($('agT'),4)/1000;
+      if(tmp.b<=0||tmp.t<=0||tmp.t>=tmp.b){ setMsg('ขนาดไม่ถูกต้อง (t ต้องน้อยกว่า b)',true); return false; } }
+    sectionCalc(tmp);
+    let nm2=$('buName').value.trim();
+    if(!nm2){
+      if(shp==='ibuilt')nm2='BU-I '+Math.round((tmp.hw+2*tmp.tf)*1000)+'×'+Math.round(tmp.bf*1000)+'×'+Math.round(tmp.tf*1000)+'/'+Math.round(tmp.tw*1000);
+      else if(shp==='box')nm2='กล่อง '+Math.round(tmp.b*1000)+'×'+Math.round(tmp.h*1000)+'×'+(+(tmp.t*1000).toFixed(1));
+      else nm2='ฉาก L'+Math.round(tmp.b*1000)+'×'+Math.round(tmp.b*1000)+'×'+(+(tmp.t*1000).toFixed(1));
+    }
     pushUndo();
-    if(s){ s.name=$('buName').value; s.mat=+$('buMat').value; s.bf=bf; s.tf=tf; s.hw=hw; s.tw=tw; sectionCalc(s); }
-    else addBuiltUpSection($('buName').value,+$('buMat').value,bf,tf,hw,tw);
+    if(s){ Object.keys(tmp).forEach(k=>s[k]=tmp[k]); s.name=nm2; s.mat=+$('buMat').value; sectionCalc(s); }
+    else { const s2=Object.assign({id:model.ns++, name:nm2, mat:+$('buMat').value}, tmp); model.sections.push(s2); }
     invalidate(); renderDataView(); renderProps();
-    setMsg('บันทึกหน้าตัด Built-up แล้ว');
+    setMsg('บันทึกหน้าตัด '+nm2+' แล้ว (A='+fmt(tmp.A*1e4,2)+' cm², I='+fmt(tmp.I*1e8,1)+' cm⁴)');
   });
-  const upd=()=>{
-    const bf=num($('buBf'))/1000, tf=num($('buTf'))/1000, hw=num($('buHw'))/1000, tw=num($('buTw'))/1000;
-    const H=hw+2*tf, A=2*bf*tf+hw*tw, I=(bf*Math.pow(H,3)-(bf-tw)*Math.pow(hw,3))/12;
-    $('buInfo').innerHTML='H รวม = <b>'+fmt(H*1000,0)+'</b> mm &nbsp;|&nbsp; A = <b>'+fmt(A*1e4,1)+'</b> cm² &nbsp;|&nbsp; I = <b>'+fmt(I*1e8,0)+'</b> cm⁴ &nbsp;|&nbsp; น้ำหนัก ≈ <b>'+fmt(A*77,1)+'</b> kg/m';
+  const syncS=()=>{
+    const shp=$('psShape').value;
+    $('psI').style.display=shp==='ibuilt'?'':'none';
+    $('psB').style.display=shp==='box'?'':'none';
+    $('psA').style.display=shp==='angle'?'':'none';
+    updInfo();
   };
-  ['buBf','buTf','buHw','buTw'].forEach(id=>$(id).oninput=upd);
-  upd();
+  const updInfo=()=>{
+    const shp=$('psShape').value;
+    const tmp={shape:shp};
+    if(shp==='ibuilt'){ tmp.bf=num($('buBf'))/1000; tmp.tf=num($('buTf'))/1000; tmp.hw=num($('buHw'))/1000; tmp.tw=num($('buTw'))/1000; }
+    else if(shp==='box'){ tmp.b=num($('bxB'))/1000; tmp.h=num($('bxH'))/1000; tmp.t=num($('bxT'))/1000; }
+    else { tmp.b=num($('agB'))/1000; tmp.t=num($('agT'))/1000; }
+    try{ sectionCalc(tmp); }catch(e){}
+    $('buInfo').innerHTML='A = <b>'+fmt((tmp.A||0)*1e4,2)+'</b> cm² &nbsp;|&nbsp; I = <b>'+fmt((tmp.I||0)*1e8,1)+'</b> cm⁴ &nbsp;|&nbsp; น้ำหนัก ≈ <b>'+fmt((tmp.A||0)*77,1)+'</b> kg/m';
+  };
+  $('psShape').onchange=syncS;
+  ['buBf','buTf','buHw','buTw','bxB','bxH','bxT','agB','agT'].forEach(id=>{ const el=$(id); if(el)el.oninput=updInfo; });
+  syncS();
+}
+/* ============ TRUSS ENGINE v2 : profile × web pattern (Don Truss style) ============ */
+var TRUSS_LIB=[
+  {k:'howe',    nm:'Howe',                prof:'gable',   web:'pv',      pat:'howe'},
+  {k:'pratt',   nm:'Pratt',               prof:'gable',   web:'pv',      pat:'pratt'},
+  {k:'fan',     nm:'Fan',                 prof:'gable',   web:'fan'},
+  {k:'warren',  nm:'Warren',              prof:'parallel',web:'warren'},
+  {k:'bow',     nm:'Bowstring',           prof:'bow',     web:'pv',      pat:'pratt'},
+  {k:'cant',    nm:'Single Cantilever',   prof:'gable',   web:'pv',      pat:'pratt', cant:true},
+  {k:'mono',    nm:'Monopitch',           prof:'mono',    web:'pv',      pat:'right'},
+  {k:'mscis',   nm:'Modified Scissors',   prof:'scissor', web:'pv',      pat:'howe'},
+  {k:'fink',    nm:'Fink',                prof:'gable',   web:'warren'},
+  {k:'dstub',   nm:'Double Stub End',     prof:'gable',   web:'pv',      pat:'pratt', heel:0.6},
+  {k:'scis',    nm:'Scissors',            prof:'scissor', web:'pv',      pat:'pratt'},
+  {k:'mwarren', nm:'Modified Warren',     prof:'parallel',web:'mwarren'},
+  {k:'pc',      nm:'Parallel Chord',      prof:'parallel',web:'pv',      pat:'pratt'},
+  {k:'hhowe',   nm:'Half Howe',           prof:'mono',    web:'pv',      pat:'left'},
+  {k:'hscis',   nm:'Half Scissors',       prof:'halfsc',  web:'pv',      pat:'right'},
+  {k:'hwarren', nm:'Half Warren',         prof:'mono',    web:'warren'},
+  {k:'hmwarren',nm:'Half Mod. Warren',    prof:'mono',    web:'mwarren'},
+  {k:'hpc',     nm:'Half Parallel Chord', prof:'hpc',     web:'pv',      pat:'right'},
+  {k:'curve1',  nm:'Curved Truss 1',      prof:'bow',     web:'mwarren'},
+  {k:'curve2',  nm:'Curved Truss 2',      prof:'crescent',web:'pv',      pat:'pratt'},
+  {k:'gambrel', nm:'Gambrel',             prof:'gambrel', web:'pv',      pat:'pratt'}
+];
+
+function genTruss(p){
+  /* backward compat: old saved wizards ใช้ tmpl */
+  if(!p.prof&&p.tmpl){
+    const map={box:'parallel',gable:'gable',half:'mono',scissor:'scissor',gambrel:'gambrel'};
+    p.prof=map[p.tmpl]||'gable'; p.web=p.web||'pv';
+  }
+  const prof=p.prof||'gable', web=p.web||'pv';
+  const n=Math.max(2,Math.round(p.n/2)*2), dx=p.S/n;
+  let hL=Math.max(0,(p.heelL!==undefined?p.heelL:(p.heel||0)));
+  let hR=Math.max(0,(p.heelR!==undefined?p.heelR:(p.heel||0)));
+  if(prof==='parallel'&&hL<=0&&hR<=0){ hL=p.H; hR=p.H; }
+  const hd=Math.max(0.2,p.hd||Math.max(0.5,p.H*0.35));
+  const lin=t=>hL*(1-t)+hR*t;
+  const peak=t=>1-Math.abs(2*t-1);
+  const gamb=t=>{ const pts=[[0,0],[0.25,0.8],[0.5,1],[0.75,0.8],[1,0]];
+    for(let i=1;i<pts.length;i++) if(t<=pts[i][0]+1e-9){ const f=(t-pts[i-1][0])/(pts[i][0]-pts[i-1][0]); return pts[i-1][1]+(pts[i][1]-pts[i-1][1])*f; } return 0; };
+  const topY=x=>{
+    const t=x/p.S;
+    switch(prof){
+      case 'parallel': return lin(t);
+      case 'mono': case 'halfsc': return hL+(p.H-hL)*t;
+      case 'bow': case 'crescent': return lin(t)+Math.max(0,p.H-lin(0.5))*4*t*(1-t);
+      case 'gambrel': return lin(t)+Math.max(0,p.H-lin(0.5))*gamb(t);
+      case 'hpc': return (p.H-hd)*t + hd*(1-t)*0 + hd + hL*0; /* slant bottom + const depth */
+      default: return lin(t)+Math.max(0,p.H-lin(0.5))*peak(t); /* gable / scissor */
+    }
+  };
+  const topY2=x=>prof==='hpc'?((p.H-hd)*(x/p.S)+hd):topY(x);
+  const belly=Math.max(0,p.belly||0);
+  const botY=x=>{
+    const t=x/p.S;
+    const bl=belly*peak(t);
+    switch(prof){
+      case 'scissor': return bl+Math.max(0,(p.H-(hL+hR)/2)*0.5*peak(t));
+      case 'crescent': return bl+Math.max(0,(p.H-(hL+hR)/2)*0.35*4*t*(1-t));
+      case 'hpc': return bl+(p.H-hd)*t;
+      case 'halfsc': return bl+Math.max(0,(p.H-hL)*0.45*t);
+      default: return bl;
+    }
+  };
+  const bot=[],top=[];
+  for(let i=0;i<=n;i++){
+    const x=i*dx;
+    bot.push(wizNode(x,botY(x)));
+    const ty=topY2(x);
+    top.push(Math.abs(ty-botY(x))<1e-6?bot[i]:wizNode(x,ty));
+  }
+  const sB=p.secB||p.sec, sT=p.secT||p.sec, sV=p.secV||p.sec, sD=p.secD||p.sec;
+  const hasOv=(p.ovL>1e-9)||(p.ovR>1e-9);
+  const chordT=hasOv?'frame':'truss';
+  for(let i=0;i<n;i++){ wizMem(bot[i],bot[i+1],sB,'truss'); wizMem(top[i],top[i+1],sT,chordT); }
+  /* ---- web patterns ---- */
+  if(web==='pv'){
+    for(let i=0;i<=n;i++) if(top[i]!==bot[i]) wizMem(bot[i],top[i],sV,'truss');
+    for(let i=0;i<n;i++){
+      let toRight=(i<n/2)?((p.diagL||'right')==='right'):((p.diagR||'left')==='right');
+      if(toRight&&bot[i]!==top[i+1]) wizMem(bot[i],top[i+1],sD,'truss');
+      else if(!toRight&&bot[i+1]!==top[i]) wizMem(bot[i+1],top[i],sD,'truss');
+    }
+  } else if(web==='warren'||web==='mwarren'){
+    for(let i=0;i<n;i++){
+      if(i%2===0){ if(bot[i]!==top[i+1]) wizMem(bot[i],top[i+1],sD,'truss'); }
+      else { if(top[i]!==bot[i+1]) wizMem(top[i],bot[i+1],sD,'truss'); }
+    }
+    if(web==='mwarren') for(let i=0;i<=n;i++) if(top[i]!==bot[i]) wizMem(bot[i],top[i],sV,'truss');
+    if(top[0]!==bot[0]) wizMem(bot[0],top[0],sV,'truss');
+    if(top[n]!==bot[n]) wizMem(bot[n],top[n],sV,'truss');
+  } else if(web==='fan'){
+    for(let i=0;i<=n;i++) if(top[i]!==bot[i]) wizMem(bot[i],top[i],sV,'truss');
+    for(let i=0;i<n;i++){
+      if(bot[i]!==top[i+1]) wizMem(bot[i],top[i+1],sD,'truss');
+      if(bot[i+1]!==top[i]) wizMem(bot[i+1],top[i],sD,'truss');
+    }
+  }
+  /* ---- auto-stabilize: ปมที่มีเฉพาะคอร์ดแนวเดียว → เติมท่อนตั้ง ---- */
+  const deg=id=>model.members.reduce((s,mm)=>s+((mm.ni===id||mm.nj===id)?1:0),0);
+  for(let i=1;i<n;i++){
+    if(top[i]!==bot[i]&&(deg(top[i])<=2||deg(bot[i])<=2)) wizMem(bot[i],top[i],sV,'truss');
+  }
+  /* ---- supports: กำหนดเองด้วยเลข Node หรืออัตโนมัติ (ปลายสองข้าง / cantilever) ---- */
+  let customSup=false;
+  if(p.sups&&p.sups.length){
+    let first=true;
+    for(const nid of p.sups){
+      const nd=getNode(Math.round(nid)); if(!nd)continue;
+      nd.sup=first?'pin':'roller'; first=false; customSup=true;
+    }
+  }
+  if(!customSup){
+    const rIdx=p.cant?Math.max(1,n-1):n;
+    getNode(bot[0]).sup='pin';
+    getNode(bot[rIdx]).sup='roller';
+  }
+  /* ---- overhang (ระยะยื่นชายคา) ---- */
+  const mkTip=(endIdx,nextIdx,ov)=>{
+    if(!(ov>1e-9))return null;
+    const a=getNode(top[endIdx]), b=getNode(top[nextIdx]);
+    const ux=a.x-b.x, uy=a.y-b.y, ul=Math.hypot(ux,uy)||1;
+    const tip=wizNode(a.x+ux/ul*ov, a.y+uy/ul*ov);
+    wizMem(top[endIdx],tip,sT,'frame');
+    return tip;
+  };
+  const tipL=mkTip(0,1,p.ovL||0), tipR=mkTip(n,n-1,p.ovR||0);
+  /* ---- loads: หลายรายการ + ทิศทาง → แรงจุดที่ปม top chord ตามพื้นที่รับ ---- */
+  const LD=wizLoadList(p);
+  const put=(node,trib)=>{
+    for(const ld of LD){
+      if(!ld.w)continue;
+      if((ld.dir||'GY')==='GX') model.nodeLoads.push({id:model.nl++,node,fx:ld.w*trib,fy:0,mz:0,lc:ld.lc});
+      else model.nodeLoads.push({id:model.nl++,node,fx:0,fy:-ld.w*trib,mz:0,lc:ld.lc});
+    }
+  };
+  for(let i=0;i<=n;i++){
+    let trib=(i===0||i===n)?dx/2:dx;
+    if(i===0&&tipL)trib+=(p.ovL||0)/2;
+    if(i===n&&tipR)trib+=(p.ovR||0)/2;
+    put(top[i],trib);
+  }
+  if(tipL)put(tipL,(p.ovL||0)/2);
+  if(tipR)put(tipR,(p.ovR||0)/2);
+}
+/* ---------- gallery thumbnails ---------- */
+function drawTrussThumb(cvs,lib){
+  const g=cvs.getContext('2d');
+  g.clearRect(0,0,cvs.width,cvs.height);
+  const p={type:'truss',prof:lib.prof,web:lib.web,S:12,H:3,n:6,
+    heelL:lib.heel||0,heelR:lib.heel||0,diagL:'right',diagR:'left',
+    cant:lib.cant,ovL:0,ovR:0,sec:model.sections[0].id,wDL:0,wLL:0};
+  if(lib.pat){ const PT={pratt:['right','left'],howe:['left','right'],right:['right','right'],left:['left','left']}[lib.pat]; p.diagL=PT[0]; p.diagR=PT[1]; }
+  if(lib.prof==='scissor'){ p.heelL=0.9; p.heelR=0.9; }
+  const d=wizPreviewData(p);
+  if(!d.nodes.length)return;
+  let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
+  d.nodes.forEach(nn=>{x0=Math.min(x0,nn.x);x1=Math.max(x1,nn.x);y0=Math.min(y0,nn.y);y1=Math.max(y1,nn.y);});
+  const sc=Math.min((cvs.width-10)/Math.max(x1-x0,1),(cvs.height-10)/Math.max(y1-y0,0.6));
+  const ox=(cvs.width-(x0+x1)*sc)/2, oy=(cvs.height+(y0+y1)*sc)/2;
+  const nm={}; d.nodes.forEach(nn=>nm[nn.id]=nn);
+  g.strokeStyle='#222'; g.lineWidth=1;
+  for(const m of d.members){
+    const a=nm[m.ni],b=nm[m.nj]; if(!a||!b)continue;
+    g.beginPath(); g.moveTo(ox+a.x*sc,oy-a.y*sc); g.lineTo(ox+b.x*sc,oy-b.y*sc); g.stroke();
+  }
+}
+function renderTrussGallery(selKey){
+  const gal=$('wtGal'); if(!gal)return;
+  gal.innerHTML='';
+  for(const lib of TRUSS_LIB){
+    const div=document.createElement('div');
+    div.className='ttile'+(lib.k===selKey?' active':'');
+    div.dataset.k=lib.k;
+    div.innerHTML='<canvas width="104" height="46"></canvas><div>'+lib.nm+'</div>';
+    div.onclick=()=>{
+      $('wtKey').value=lib.k;
+      $('wtWeb').value=lib.web;
+      if(lib.pat)$('wtDiagPat').value=lib.pat;
+      if(lib.heel!==undefined){ $('wtHeelL').value=lib.heel; $('wtHeelR').value=lib.heel; }
+      gal.querySelectorAll('.ttile').forEach(t2=>t2.classList.toggle('active',t2===div));
+      $('wtDiagRow').style.display=($('wtWeb').value==='pv')?'':'none';
+      drawWzPreview();
+    };
+    gal.appendChild(div);
+    try{ drawTrussThumb(div.querySelector('canvas'),lib); }catch(e){}
+  }
 }
 /* ============ PRINT EVERYWHERE (ทุกหน้าแสดงผล) ============ */
 function printHTML(title, bodyHtml){
@@ -3237,13 +4008,19 @@ function printAny(){
   else if(ui.win==='data')printData();
   else printCanvasView();
 }
-/* ============ ASSIGN-TO-SELECTION (SAP2000 style) + FULL EDIT DIALOGS ============ */
+/* ============ ASSIGN-TO-SELECTION + FULL EDIT DIALOGS (Add Row / Delete Row) ============ */
 function lcSel2(id,sel){
-  return '<select id="'+id+'" style="max-width:130px">'+model.loadCases.map(c=>'<option value="'+c.id+'"'+(sel===c.id?' selected':'')+'>'+c.name+'</option>').join('')+'</select>';
+  return '<select id="'+id+'" class="lcsel" style="max-width:125px">'+
+    model.loadCases.map(c=>'<option value="'+c.id+'"'+(sel===c.id?' selected':'')+'>'+c.name+'</option>').join('')+
+    '</select>';
 }
 function curLcNum(){ return (typeof ui.lc==='number')?ui.lc:model.loadCases[0].id; }
+function vIn(id,val,w){
+  return '<input type="number" id="'+id+'" value="'+val+'" style="width:'+(w||72)+'px">';
+}
+const MODE_SEL=(id)=>'<select id="'+id+'"><option value="add">➕ เพิ่มเข้าไป (Add)</option><option value="replace">♻ แทนที่แรงเดิมของ case นี้ (Replace)</option><option value="delete">🗑 ลบแรงของ case นี้ทิ้ง (Delete)</option></select>';
 
-/* ---------- Assign: Section to selected members ---------- */
+/* ---------- Assign: Section ---------- */
 function openAssignSectionDlg(){
   if(!ui.selM.length){ setMsg('เลือก Member ก่อน (คลิก/ลากกรอบ) แล้วค่อย Assign',true); return; }
   dlg('Assign หน้าตัด → Member ที่เลือก ('+ui.selM.length+' ชิ้น)',
@@ -3253,13 +4030,13 @@ function openAssignSectionDlg(){
       ui.selM.forEach(id=>{ const m=getMember(id); if(m)m.sec=v; });
       invalidate(); renderProps(); setMsg('กำหนดหน้าตัดให้ '+ui.selM.length+' Member แล้ว'); });
 }
-/* ---------- Assign: Material (via sections of selected members) ---------- */
+/* ---------- Assign: Material ---------- */
 function openAssignMaterialDlg(){
   if(!ui.selM.length){ setMsg('เลือก Member ก่อน',true); return; }
   const secs=[...new Set(ui.selM.map(id=>{const m=getMember(id);return m?m.sec:null;}).filter(x=>x!=null))];
   dlg('Assign วัสดุ → Member ที่เลือก ('+ui.selM.length+' ชิ้น)',
     '<div class="prow"><label>วัสดุ</label><select id="asMat">'+model.materials.map(mt=>'<option value="'+mt.id+'">'+mt.name+'</option>').join('')+'</select></div>'+
-    '<div class="pnote">⚠ วัสดุผูกกับ<b>หน้าตัด</b> — จะเปลี่ยนวัสดุของหน้าตัด '+secs.length+' รายการที่ member เหล่านี้ใช้อยู่<br>(member อื่นที่ใช้หน้าตัดเดียวกันจะเปลี่ยนตามด้วย)</div>',
+    '<div class="pnote">⚠ วัสดุผูกกับ<b>หน้าตัด</b> — จะเปลี่ยนวัสดุของหน้าตัด '+secs.length+' รายการที่ member เหล่านี้ใช้อยู่</div>',
     ()=>{ pushUndo(); const v=+$('asMat').value;
       secs.forEach(sid=>{ const s=model.sections.find(x=>x.id===sid); if(s)s.mat=v; });
       invalidate(); renderProps(); setMsg('กำหนดวัสดุให้หน้าตัด '+secs.length+' รายการแล้ว'); });
@@ -3280,132 +4057,193 @@ function openAssignTypeDlg(){
       });
       invalidate(); renderProps(); setMsg('กำหนดชนิด/Hinge ให้ '+ui.selM.length+' Member แล้ว'); });
 }
-/* ---------- Assign: Node loads to selected nodes ---------- */
+/* ---------- Assign: Node loads ---------- */
 function openAssignNLoadDlg(){
   const ids=ui.selN.length?ui.selN:selNodesEffective();
   if(!ids.length){ setMsg('เลือก Node ก่อน',true); return; }
   const u=U();
   dlg('Assign แรงที่ Node → '+ids.length+' Node ที่เลือก',
+    '<div class="prow"><label>วิธีใส่</label>'+MODE_SEL('anMode')+'</div>'+
     '<div class="prow"><label>Load Case</label>'+lcSel2('anLc',curLcNum())+'</div>'+
-    '<div class="prow"><label>Fx ('+u.fname+')</label><input type="number" id="anFx" value="0" step="10"></div>'+
-    '<div class="prow"><label>Fy ('+u.fname+')</label><input type="number" id="anFy" value="-1000" step="10"></div>'+
-    '<div class="prow"><label>Mz ('+u.mname+')</label><input type="number" id="anMz" value="0" step="10"></div>'+
-    '<div class="prow"><input type="checkbox" id="anRep" checked><label style="flex:1">แทนที่แรงเดิมของ case นี้บน Node เหล่านี้</label></div>'+
+    '<div id="anFlds">'+
+    '<div class="prow"><label>Fx ('+u.fname+')</label>'+vIn('anFx',0)+'</div>'+
+    '<div class="prow"><label>Fy ('+u.fname+')</label>'+vIn('anFy',0)+'</div>'+
+    '<div class="prow"><label>Mz ('+u.mname+')</label>'+vIn('anMz',0)+'</div>'+
+    '<div class="prow"><label>Note</label><input type="text" id="anNote" placeholder="เช่น น้ำหนักถังน้ำ" style="flex:1"></div></div>'+
     '<div class="pnote">+Fx →ขวา, +Fy ↑ขึ้น (กดลงใช้ค่าลบ), +Mz ทวนเข็ม</div>',
     ()=>{ pushUndo();
-      const lc=+$('anLc').value, fx=iF(num($('anFx'))), fy=iF(num($('anFy'))), mz=iM(num($('anMz')));
-      if($('anRep').checked) model.nodeLoads=model.nodeLoads.filter(l=>!(ids.includes(l.node)&&l.lc===lc));
-      if(fx||fy||mz) ids.forEach(nid=>model.nodeLoads.push({id:model.nl++,node:nid,fx,fy,mz,lc}));
-      invalidate(); renderProps(); setMsg('กำหนดแรงให้ '+ids.length+' Node แล้ว ['+caseName(String(lc))+']'); });
+      const mode=$('anMode').value, lc=+$('anLc').value;
+      if(mode==='delete'){
+        const n0=model.nodeLoads.length;
+        model.nodeLoads=model.nodeLoads.filter(l=>!(ids.includes(l.node)&&l.lc===lc));
+        invalidate(); renderProps(); setMsg('ลบแรง '+(n0-model.nodeLoads.length)+' รายการออกจาก '+ids.length+' Node ['+caseName(String(lc))+']'); return;
+      }
+      const fx=iF(num($('anFx'))), fy=iF(num($('anFy'))), mz=iM(num($('anMz'))), note=$('anNote').value;
+      if(mode==='replace') model.nodeLoads=model.nodeLoads.filter(l=>!(ids.includes(l.node)&&l.lc===lc));
+      if(fx||fy||mz) ids.forEach(nid=>model.nodeLoads.push({id:model.nl++,node:nid,fx,fy,mz,lc,note}));
+      invalidate(); renderProps(); setMsg((mode==='replace'?'แทนที่':'เพิ่ม')+'แรงให้ '+ids.length+' Node แล้ว ['+caseName(String(lc))+']'); });
+  $('anMode').onchange=()=>{ $('anFlds').style.display=$('anMode').value==='delete'?'none':''; };
 }
-/* ---------- Assign: Member loads to selected members ---------- */
+/* ---------- Assign: Member loads ---------- */
 function openAssignMLoadDlg(){
   if(!ui.selM.length){ setMsg('เลือก Member ก่อน',true); return; }
   const u=U();
   dlg('Assign แรงบน Member → '+ui.selM.length+' Member ที่เลือก',
-    '<div class="prow"><label>ชนิดแรง</label><select id="amKind"><option value="udl">แรงแผ่สม่ำเสมอ (UDL)</option><option value="trap">แรงแผ่ w1→w2 (Trapezoid)</option><option value="point">แรงจุดบน member</option></select></div>'+
+    '<div class="prow"><label>วิธีใส่</label>'+MODE_SEL('amMode')+'</div>'+
     '<div class="prow"><label>Load Case</label>'+lcSel2('amLc',curLcNum())+'</div>'+
+    '<div id="amFlds">'+
+    '<div class="prow"><label>ชนิดแรง</label><select id="amKind"><option value="udl">แรงแผ่เต็มความยาว (UDL)</option><option value="pudl">แรงแผ่บางช่วง x1→x2 (Partial UDL)</option><option value="trap">แรงแผ่ w1→w2 (Trapezoid)</option><option value="point">แรงจุดบน member</option></select></div>'+
     '<div class="prow"><label>ทิศทาง</label><select id="amDir"><option value="GY">Global Y (ดิ่ง)</option><option value="GX">Global X (ราบ)</option><option value="LY">Local y (ตั้งฉาก)</option></select></div>'+
-    '<div class="prow" id="amRw"><label>w / w1 ('+u.wname+')</label><input type="number" id="amW" value="-1000" step="10"></div>'+
-    '<div class="prow" id="amRw2"><label>w2 ปลาย J ('+u.wname+')</label><input type="number" id="amW2" value="-500" step="10"></div>'+
-    '<div class="prow" id="amRp"><label>P ('+u.fname+')</label><input type="number" id="amP" value="-1000" step="10"></div>'+
-    '<div class="prow" id="amRa"><label>ระยะ a (m จาก I)</label><input type="number" id="amA" value="1" step="0.25" min="0"></div>'+
-    '<div class="prow"><input type="checkbox" id="amRep"><label style="flex:1">แทนที่แรงเดิมของ case นี้บน Member เหล่านี้</label></div>'+
-    '<div class="pnote">แรงกดลงใช้ค่าลบ • ใช้กับทุก Member ที่เลือกพร้อมกัน</div>',
+    '<div class="prow" id="amRw"><label>w / w1 ('+u.wname+')</label>'+vIn('amW',0)+'</div>'+
+    '<div class="prow" id="amRw2"><label>w2 ปลาย J ('+u.wname+')</label>'+vIn('amW2',0)+'</div>'+
+    '<div class="prow" id="amRp"><label>P ('+u.fname+')</label>'+vIn('amP',0)+'</div>'+
+    '<div class="prow" id="amRa"><label>ระยะ a / x1 (m)</label>'+vIn('amA',1)+'</div>'+
+    '<div class="prow" id="amRa2"><label>ถึง x2 (m)</label>'+vIn('amA2',3)+'</div>'+
+    '<div class="prow"><label>Note</label><input type="text" id="amNote" placeholder="เช่น ผนังก่ออิฐ" style="flex:1"></div></div>'+
+    '<div class="pnote">แรงกดลงใช้ค่าลบ • ใช้กับทุก Member ที่เลือกพร้อมกัน • x วัดจาก Node I</div>',
     ()=>{ pushUndo();
-      const kind=$('amKind').value, lc=+$('amLc').value, dir=$('amDir').value;
-      if($('amRep').checked) model.memberLoads=model.memberLoads.filter(l=>!(ui.selM.includes(l.member)&&l.lc===lc));
+      const mode=$('amMode').value, lc=+$('amLc').value;
+      if(mode==='delete'){
+        const n0=model.memberLoads.length;
+        model.memberLoads=model.memberLoads.filter(l=>!(ui.selM.includes(l.member)&&l.lc===lc));
+        invalidate(); renderProps(); setMsg('ลบแรง '+(n0-model.memberLoads.length)+' รายการออกจาก '+ui.selM.length+' Member ['+caseName(String(lc))+']'); return;
+      }
+      const kind=$('amKind').value, dir=$('amDir').value, note=$('amNote').value;
+      if(mode==='replace') model.memberLoads=model.memberLoads.filter(l=>!(ui.selM.includes(l.member)&&l.lc===lc));
       ui.selM.forEach(mid=>{
         const m=getMember(mid); if(!m)return;
-        if(kind==='udl') model.memberLoads.push({id:model.nl++,member:mid,kind:'udl',dir,val:iW(num($('amW'))),a:0,lc});
-        else if(kind==='trap') model.memberLoads.push({id:model.nl++,member:mid,kind:'trap',dir,val:iW(num($('amW'))),val2:iW(num($('amW2'))),a:0,lc});
-        else { const L=memberLen(m); model.memberLoads.push({id:model.nl++,member:mid,kind:'point',dir,val:iF(num($('amP'))),a:Math.min(Math.max(0,num($('amA'),1)),L),lc}); }
+        const L=memberLen(m);
+        if(kind==='udl') model.memberLoads.push({id:model.nl++,member:mid,kind:'udl',dir,val:iW(num($('amW'))),a:0,lc,note});
+        else if(kind==='pudl') model.memberLoads.push({id:model.nl++,member:mid,kind:'pudl',dir,val:iW(num($('amW'))),a:Math.min(Math.max(0,num($('amA'))),L),a2:Math.min(Math.max(0,num($('amA2'),L)),L),lc,note});
+        else if(kind==='trap') model.memberLoads.push({id:model.nl++,member:mid,kind:'trap',dir,val:iW(num($('amW'))),val2:iW(num($('amW2'))),a:0,lc,note});
+        else model.memberLoads.push({id:model.nl++,member:mid,kind:'point',dir,val:iF(num($('amP'))),a:Math.min(Math.max(0,num($('amA'),1)),L),lc,note});
       });
-      invalidate(); renderProps(); setMsg('กำหนดแรงให้ '+ui.selM.length+' Member แล้ว ['+caseName(String(lc))+']'); });
+      invalidate(); renderProps(); setMsg((mode==='replace'?'แทนที่':'เพิ่ม')+'แรงให้ '+ui.selM.length+' Member แล้ว ['+caseName(String(lc))+']'); });
   const syncK=()=>{
-    const k=$('amKind').value;
+    const k=$('amKind').value, del=$('amMode').value==='delete';
+    $('amFlds').style.display=del?'none':'';
+    if(del)return;
     $('amRw').style.display=(k==='point')?'none':'';
     $('amRw2').style.display=(k==='trap')?'':'none';
     $('amRp').style.display=(k==='point')?'':'none';
-    $('amRa').style.display=(k==='point')?'':'none';
+    $('amRa').style.display=(k==='point'||k==='pudl')?'':'none';
+    $('amRa2').style.display=(k==='pudl')?'':'none';
   };
-  $('amKind').onchange=syncK; syncK();
+  $('amKind').onchange=syncK;
+  $('amMode').onchange=syncK;
+  syncK();
 }
 
-/* ============ FULL EDIT DIALOGS (double-click) — override base versions ============ */
+/* ============ EDIT DIALOGS: ตารางแรงแบบ Add Row / Delete Row ============ */
+const ROWDEL=(row,attr)=>'<td style="text-align:center"><button type="button" class="rowdel" data-row="'+row+'" '+attr+' title="ลบแถวนี้ (Delete Row)">🗑</button></td>';
+function wireRowBtns(state){
+  $('dlgBody').querySelectorAll('.rowdel').forEach(b=>{
+    b.onclick=()=>{
+      const tr=document.getElementById(b.dataset.row);
+      if(tr)tr.style.display='none';
+      if(b.dataset.id)state.del.add(+b.dataset.id);
+      if(b.dataset.new)state.delNew.add(+b.dataset.new);
+    };
+  });
+}
+/* ---------- Node edit dialog ---------- */
 function openNodeDlg(id){
   const n=getNode(id); if(!n)return;
   const u=U();
   const lds=model.nodeLoads.filter(l=>l.node===id);
+  const state={del:new Set(), delNew:new Set(), news:[], k:0};
+  const newRow=k=>'<tr id="dNLnew'+k+'" style="background:#f4f9f4">'+
+    '<td>'+lcSel2('dNLcN'+k,curLcNum())+'</td>'+
+    '<td>'+vIn('dNLfxN'+k,0)+'</td><td>'+vIn('dNLfyN'+k,0)+'</td><td>'+vIn('dNLmzN'+k,0)+'</td>'+
+    '<td><input type="text" id="dNLnN'+k+'" style="width:90px"></td>'+
+    ROWDEL('dNLnew'+k,'data-new="'+k+'"')+'</tr>';
   let h=
-    '<div class="prow"><label>x (m)</label><input type="number" id="dNx" value="'+n.x+'" step="0.25"></div>'+
-    '<div class="prow"><label>y (m)</label><input type="number" id="dNy" value="'+n.y+'" step="0.25"></div>'+
+    '<div class="prow"><label>x (m)</label>'+vIn('dNx',n.x,80)+'</div>'+
+    '<div class="prow"><label>y (m)</label>'+vIn('dNy',n.y,80)+'</div>'+
     '<div class="prow"><label>Support</label><select id="dNs">'+['','pin','roller','rollerX','fixed'].map(s=>'<option value="'+s+'"'+((n.sup||'')===s?' selected':'')+'>'+supName(s)+'</option>').join('')+'</select></div>'+
     '<div class="msep" style="margin:8px 0"></div>'+
-    '<div style="font:600 12px Segoe UI;color:var(--acc);margin:2px 0 4px">แรงกระทำบน Node นี้ (แก้ค่า / ติ๊กลบ / แถวล่างสุด = เพิ่มใหม่)</div>'+
-    '<table class="sheet"><tr><th>Load Case</th><th>Fx ('+u.fname+')</th><th>Fy ('+u.fname+')</th><th>Mz ('+u.mname+')</th><th>ลบ</th></tr>';
+    '<div style="font:600 12px Segoe UI;color:var(--acc);margin:2px 0 4px">แรงกระทำบน Node นี้</div>'+
+    '<table class="sheet"><thead><tr><th>Load Case</th><th>Fx ('+u.fname+')</th><th>Fy ('+u.fname+')</th><th>Mz ('+u.mname+')</th><th>Note</th><th>ลบแถว</th></tr></thead><tbody id="dNLtb">';
   for(const l of lds){
-    h+='<tr><td>'+lcSel2('dNLc'+l.id,l.lc||model.loadCases[0].id)+'</td>'+
-      '<td><input type="number" id="dNLfx'+l.id+'" value="'+fmtRaw(dF(l.fx))+'" style="width:76px"></td>'+
-      '<td><input type="number" id="dNLfy'+l.id+'" value="'+fmtRaw(dF(l.fy))+'" style="width:76px"></td>'+
-      '<td><input type="number" id="dNLmz'+l.id+'" value="'+fmtRaw(dM(l.mz))+'" style="width:76px"></td>'+
-      '<td style="text-align:center"><input type="checkbox" id="dNLdel'+l.id+'"></td></tr>';
+    h+='<tr id="dNLrow'+l.id+'">'+
+      '<td>'+lcSel2('dNLc'+l.id,l.lc||model.loadCases[0].id)+'</td>'+
+      '<td>'+vIn('dNLfx'+l.id,fmtRaw(dF(l.fx)))+'</td>'+
+      '<td>'+vIn('dNLfy'+l.id,fmtRaw(dF(l.fy)))+'</td>'+
+      '<td>'+vIn('dNLmz'+l.id,fmtRaw(dM(l.mz)))+'</td>'+
+      '<td><input type="text" id="dNLn'+l.id+'" value="'+(l.note||'')+'" style="width:90px"></td>'+
+      ROWDEL('dNLrow'+l.id,'data-id="'+l.id+'"')+'</tr>';
   }
-  h+='<tr style="background:#f4f9f4"><td>'+lcSel2('dNLcNew',curLcNum())+'</td>'+
-    '<td><input type="number" id="dNLfxNew" value="0" style="width:76px"></td>'+
-    '<td><input type="number" id="dNLfyNew" value="0" style="width:76px"></td>'+
-    '<td><input type="number" id="dNLmzNew" value="0" style="width:76px"></td>'+
-    '<td style="text-align:center;color:#0a7a2f;font-weight:700">+เพิ่ม</td></tr></table>';
+  h+='</tbody></table>'+
+    '<button type="button" class="tbtn" id="dNLadd" style="margin-top:4px;color:#0a7a2f;font-weight:600">➕ เพิ่มแถวแรง (Add Row)</button>';
   dlg('✎ แก้ไข Node N'+n.id+' (พิกัด • Support • แรง)', h, ()=>{
     pushUndo();
     n.x=num($('dNx')); n.y=num($('dNy')); n.sup=$('dNs').value||null;
     for(const l of lds.slice()){
-      if($('dNLdel'+l.id).checked){ model.nodeLoads=model.nodeLoads.filter(x=>x.id!==l.id); continue; }
+      if(state.del.has(l.id)){ model.nodeLoads=model.nodeLoads.filter(x=>x.id!==l.id); continue; }
       l.lc=+$('dNLc'+l.id).value;
       l.fx=iF(num($('dNLfx'+l.id))); l.fy=iF(num($('dNLfy'+l.id))); l.mz=iM(num($('dNLmz'+l.id)));
+      l.note=$('dNLn'+l.id).value;
     }
-    const nfx=iF(num($('dNLfxNew'))), nfy=iF(num($('dNLfyNew'))), nmz=iM(num($('dNLmzNew')));
-    if(nfx||nfy||nmz) model.nodeLoads.push({id:model.nl++,node:id,fx:nfx,fy:nfy,mz:nmz,lc:+$('dNLcNew').value});
+    for(const k of state.news){
+      if(state.delNew.has(k))continue;
+      const nfx=iF(num($('dNLfxN'+k))), nfy=iF(num($('dNLfyN'+k))), nmz=iM(num($('dNLmzN'+k)));
+      if(nfx||nfy||nmz) model.nodeLoads.push({id:model.nl++,node:id,fx:nfx,fy:nfy,mz:nmz,lc:+$('dNLcN'+k).value,note:$('dNLnN'+k).value});
+    }
     invalidate(); renderProps(); setMsg('แก้ไข N'+n.id+' แล้ว');
   });
   document.getElementById('dlg').classList.add('wide');
+  $('dNLadd').onclick=()=>{
+    const k=++state.k; state.news.push(k);
+    $('dNLtb').insertAdjacentHTML('beforeend',newRow(k));
+    wireRowBtns(state);
+  };
+  wireRowBtns(state);
 }
+/* ---------- Member edit dialog ---------- */
 function openMemberDlg(id){
   const m=getMember(id); if(!m)return;
   const u=U();
   const sec=model.sections.find(s=>s.id===m.sec)||model.sections[0];
   const lds=model.memberLoads.filter(l=>l.member===id);
   const L=memberLen(m);
+  const state={del:new Set(), delNew:new Set(), news:[], k:0};
+  const kindName=k=>k==='udl'?'UDL':(k==='pudl'?'แผ่ช่วง x1→x2':(k==='trap'?'แผ่ w1→w2':'แรงจุด'));
+  const dirSel=(idd,sel)=>'<select id="'+idd+'">'+['GY','GX','LY'].map(d=>'<option'+(sel===d?' selected':'')+'>'+d+'</option>').join('')+'</select>';
+  const newRow=k=>'<tr id="dMLnew'+k+'" style="background:#f4f9f4">'+
+    '<td><select id="dMLkN'+k+'"><option value="udl">UDL เต็ม</option><option value="pudl">แผ่ช่วง x1→x2</option><option value="trap">แผ่ w1→w2</option><option value="point">แรงจุด</option></select></td>'+
+    '<td>'+lcSel2('dMLcN'+k,curLcNum())+'</td>'+
+    '<td>'+dirSel('dMLdN'+k,'GY')+'</td>'+
+    '<td>'+vIn('dMLvN'+k,0)+'</td>'+
+    '<td>'+vIn('dMLv2N'+k,0,56)+'</td>'+
+    '<td>'+vIn('dMLaN'+k,+(L/2).toFixed(2),56)+'</td>'+
+    '<td><input type="text" id="dMLnN'+k+'" style="width:80px"></td>'+
+    ROWDEL('dMLnew'+k,'data-new="'+k+'"')+'</tr>';
   let h=
-    '<div class="prow"><label>Node I / J</label><input type="number" id="dMi" value="'+m.ni+'" style="max-width:70px"> <input type="number" id="dMj" value="'+m.nj+'" style="max-width:70px"><span class="pnote" style="margin:0 0 0 8px">L = '+fmt(L,3)+' m</span></div>'+
+    '<div class="prow"><label>Node I / J</label><input type="number" id="dMi" value="'+m.ni+'" style="max-width:64px"> <input type="number" id="dMj" value="'+m.nj+'" style="max-width:64px"><span class="pnote" style="margin:0 0 0 8px">L = '+fmt(L,3)+' m</span></div>'+
     '<div class="prow"><label>หน้าตัด</label><select id="dMs">'+model.sections.map(s=>'<option value="'+s.id+'"'+(m.sec===s.id?' selected':'')+'>'+s.name+'</option>').join('')+'</select></div>'+
     '<div class="prow"><label>วัสดุ</label><select id="dMmat">'+model.materials.map(mt=>'<option value="'+mt.id+'"'+(sec.mat===mt.id?' selected':'')+'>'+mt.name+'</option>').join('')+'</select></div>'+
-    '<div class="pnote" style="margin:2px 0 6px">⚠ วัสดุผูกกับหน้าตัด — เปลี่ยนแล้วมีผลกับทุก member ที่ใช้หน้าตัดเดียวกัน</div>'+
+    '<div class="pnote" style="margin:2px 0 6px">⚠ วัสดุผูกกับหน้าตัด — มีผลกับทุก member ที่ใช้หน้าตัดเดียวกัน</div>'+
     '<div class="prow"><label>ชนิด</label><select id="dMt"><option value="frame"'+(m.type==='frame'?' selected':'')+'>Frame</option><option value="truss"'+(m.type==='truss'?' selected':'')+'>Truss</option></select>'+
     ' <label style="flex:0 0 auto">Hinge I</label><input type="checkbox" id="dMrI"'+(m.relI?' checked':'')+'>'+
     ' <label style="flex:0 0 auto">Hinge J</label><input type="checkbox" id="dMrJ"'+(m.relJ?' checked':'')+'></div>'+
     '<div class="msep" style="margin:8px 0"></div>'+
-    '<div style="font:600 12px Segoe UI;color:var(--acc);margin:2px 0 4px">แรงกระทำบน Member นี้ (แก้ค่า / ติ๊กลบ / แถวล่างสุด = เพิ่มใหม่)</div>'+
-    '<table class="sheet"><tr><th>ชนิด</th><th>Load Case</th><th>ทิศ</th><th>w1/P</th><th>w2</th><th>a (m)</th><th>ลบ</th></tr>';
-  const dirSel=(idd,sel)=>'<select id="'+idd+'">'+['GY','GX','LY'].map(d=>'<option'+(sel===d?' selected':'')+'>'+d+'</option>').join('')+'</select>';
+    '<div style="font:600 12px Segoe UI;color:var(--acc);margin:2px 0 4px">แรงกระทำบน Member นี้</div>'+
+    '<table class="sheet"><thead><tr><th>ชนิด</th><th>Case</th><th>ทิศ</th><th>w1/P</th><th>w2 / x2</th><th>a / x1 (m)</th><th>Note</th><th>ลบแถว</th></tr></thead><tbody id="dMLtb">';
   for(const l of lds){
-    const isP=l.kind==='point', isT=l.kind==='trap';
-    h+='<tr><td class="l">'+(l.kind==='udl'?'UDL':isT?'แผ่ w1→w2':'แรงจุด')+'</td>'+
+    const isP=l.kind==='point', isT=l.kind==='trap', isPU=l.kind==='pudl';
+    h+='<tr id="dMLrow'+l.id+'">'+
+      '<td class="l">'+kindName(l.kind)+'</td>'+
       '<td>'+lcSel2('dMLc'+l.id,l.lc||model.loadCases[0].id)+'</td>'+
       '<td>'+dirSel('dMLd'+l.id,l.dir)+'</td>'+
-      '<td><input type="number" id="dMLv'+l.id+'" value="'+fmtRaw(isP?dF(l.val):dW(l.val))+'" style="width:76px"></td>'+
-      '<td>'+(isT?'<input type="number" id="dMLv2'+l.id+'" value="'+fmtRaw(dW(l.val2!==undefined?l.val2:l.val))+'" style="width:70px">':'—')+'</td>'+
-      '<td>'+(isP?'<input type="number" id="dMLa'+l.id+'" value="'+l.a+'" step="0.25" style="width:60px">':'—')+'</td>'+
-      '<td style="text-align:center"><input type="checkbox" id="dMLdel'+l.id+'"></td></tr>';
+      '<td>'+vIn('dMLv'+l.id,fmtRaw(isP?dF(l.val):dW(l.val)))+'</td>'+
+      '<td>'+(isT?vIn('dMLv2'+l.id,fmtRaw(dW(l.val2!==undefined?l.val2:l.val)),56):(isPU?vIn('dMLx2'+l.id,(l.a2!==undefined?l.a2:L),56):'—'))+'</td>'+
+      '<td>'+((isP||isPU)?vIn('dMLa'+l.id,l.a||0,56):'—')+'</td>'+
+      '<td><input type="text" id="dMLn'+l.id+'" value="'+(l.note||'')+'" style="width:80px"></td>'+
+      ROWDEL('dMLrow'+l.id,'data-id="'+l.id+'"')+'</tr>';
   }
-  h+='<tr style="background:#f4f9f4"><td><select id="dMLkNew"><option value="">— เพิ่มแรงใหม่ —</option><option value="udl">UDL</option><option value="trap">แผ่ w1→w2</option><option value="point">แรงจุด</option></select></td>'+
-    '<td>'+lcSel2('dMLcNew',curLcNum())+'</td>'+
-    '<td>'+dirSel('dMLdNew','GY')+'</td>'+
-    '<td><input type="number" id="dMLvNew" value="-1000" style="width:76px"></td>'+
-    '<td><input type="number" id="dMLv2New" value="-500" style="width:70px"></td>'+
-    '<td><input type="number" id="dMLaNew" value="'+(+(L/2).toFixed(2))+'" step="0.25" style="width:60px"></td>'+
-    '<td style="text-align:center;color:#0a7a2f;font-weight:700">+เพิ่ม</td></tr></table>'+
-    '<div class="pnote">หน่วยแรง: จุด = '+u.fname+' • แผ่ = '+u.wname+' • กดลงใช้ค่าลบ</div>';
+  h+='</tbody></table>'+
+    '<button type="button" class="tbtn" id="dMLadd" style="margin-top:4px;color:#0a7a2f;font-weight:600">➕ เพิ่มแถวแรง (Add Row)</button>'+
+    '<div class="pnote">หน่วย: แรงจุด = '+u.fname+' • แรงแผ่ = '+u.wname+' • กดลงใช้ค่าลบ • "แผ่ช่วง": ช่อง a = x1, ช่อง w2/x2 = x2</div>';
   dlg('✎ แก้ไข Member M'+m.id+' (หน้าตัด • วัสดุ • ชนิด • แรง)', h, ()=>{
     const ni=Math.round(num($('dMi'))), nj=Math.round(num($('dMj')));
     if(!getNode(ni)||!getNode(nj)||ni===nj){ setMsg('หมายเลข Node ไม่ถูกต้อง',true); return false; }
@@ -3414,22 +4252,624 @@ function openMemberDlg(id){
     m.relI=$('dMrI').checked; m.relJ=$('dMrJ').checked;
     const s2=model.sections.find(s=>s.id===m.sec); if(s2)s2.mat=+$('dMmat').value;
     for(const l of lds.slice()){
-      if($('dMLdel'+l.id).checked){ model.memberLoads=model.memberLoads.filter(x=>x.id!==l.id); continue; }
+      if(state.del.has(l.id)){ model.memberLoads=model.memberLoads.filter(x=>x.id!==l.id); continue; }
       l.lc=+$('dMLc'+l.id).value; l.dir=$('dMLd'+l.id).value;
       l.val=(l.kind==='point')?iF(num($('dMLv'+l.id))):iW(num($('dMLv'+l.id)));
       if(l.kind==='trap')l.val2=iW(num($('dMLv2'+l.id)));
+      if(l.kind==='pudl'){ l.a=Math.max(0,num($('dMLa'+l.id))); l.a2=Math.max(0,num($('dMLx2'+l.id))); }
       if(l.kind==='point')l.a=Math.max(0,num($('dMLa'+l.id)));
+      l.note=$('dMLn'+l.id).value;
     }
-    const nk=$('dMLkNew').value;
-    if(nk){
-      const lc=+$('dMLcNew').value, dir=$('dMLdNew').value;
-      if(nk==='udl') model.memberLoads.push({id:model.nl++,member:id,kind:'udl',dir,val:iW(num($('dMLvNew'))),a:0,lc});
-      else if(nk==='trap') model.memberLoads.push({id:model.nl++,member:id,kind:'trap',dir,val:iW(num($('dMLvNew'))),val2:iW(num($('dMLv2New'))),a:0,lc});
-      else model.memberLoads.push({id:model.nl++,member:id,kind:'point',dir,val:iF(num($('dMLvNew'))),a:Math.max(0,num($('dMLaNew'))),lc});
+    const L2=memberLen(m);
+    for(const k of state.news){
+      if(state.delNew.has(k))continue;
+      const nk=$('dMLkN'+k).value, lc=+$('dMLcN'+k).value, dir=$('dMLdN'+k).value, note=$('dMLnN'+k).value;
+      const v=num($('dMLvN'+k)), v2=num($('dMLv2N'+k)), a=Math.max(0,num($('dMLaN'+k)));
+      if(!v&&!v2)continue;
+      if(nk==='udl') model.memberLoads.push({id:model.nl++,member:id,kind:'udl',dir,val:iW(v),a:0,lc,note});
+      else if(nk==='pudl') model.memberLoads.push({id:model.nl++,member:id,kind:'pudl',dir,val:iW(v),a:Math.min(a,L2),a2:Math.min(Math.max(0,Math.abs(v2)||L2),L2),lc,note});
+      else if(nk==='trap') model.memberLoads.push({id:model.nl++,member:id,kind:'trap',dir,val:iW(v),val2:iW(v2),a:0,lc,note});
+      else model.memberLoads.push({id:model.nl++,member:id,kind:'point',dir,val:iF(v),a:Math.min(a,L2),lc,note});
     }
     invalidate(); renderProps(); setMsg('แก้ไข M'+m.id+' แล้ว');
   });
   document.getElementById('dlg').classList.add('wide');
+  $('dMLadd').onclick=()=>{
+    const k=++state.k; state.news.push(k);
+    $('dMLtb').insertAdjacentHTML('beforeend',newRow(k));
+    wireRowBtns(state);
+  };
+  wireRowBtns(state);
+}
+/* ============ RIGHT-CLICK CONTEXT MENU: selection modes (All / Node / Member / Support) ============ */
+function closeCtx(){ const cm=document.getElementById('ctxMenu'); if(cm)cm.style.display='none'; }
+document.addEventListener('click',()=>closeCtx());
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeCtx(); });
+
+function openCtxMenu(x,y){
+  const cm=document.getElementById('ctxMenu'); if(!cm)return;
+  const f=ui.selFilter||'all';
+  const chk=v=>f===v?'chk':'unchk';
+  cm.innerHTML=
+    '<div class="mi" style="pointer-events:none;color:var(--dim);font-weight:700">— รูปแบบการเลือก (คลิก/ลากกรอบ) —</div>'+
+    '<div class="mi '+chk('all')+'" data-cf="all">เลือกได้ทั้งหมด (All)</div>'+
+    '<div class="mi '+chk('node')+'" data-cf="node">เลือกเฉพาะ Node</div>'+
+    '<div class="mi '+chk('member')+'" data-cf="member">เลือกเฉพาะ Member</div>'+
+    '<div class="msep"></div>'+
+    '<div class="mi" data-ca="all">✔ เลือกทั้งหมด (All)</div>'+
+    '<div class="mi" data-ca="nodes">■ เลือก Node ทั้งหมด</div>'+
+    '<div class="mi" data-ca="members">╱ เลือก Member ทั้งหมด</div>'+
+    '<div class="mi" data-ca="supports">▲ เลือก Node ที่มี Support</div>'+
+    '<div class="msep"></div>'+
+    '<div class="mi" data-ca="desel">✕ ยกเลิกการเลือก <span>Esc</span></div>';
+  cm.style.display='block';
+  cm.style.left=Math.max(4,Math.min(x,window.innerWidth-245))+'px';
+  cm.style.top=Math.max(4,Math.min(y,window.innerHeight-(cm.offsetHeight||280)-8))+'px';
+  cm.querySelectorAll('[data-cf]').forEach(el=>{
+    el.onclick=ev2=>{
+      ev2.stopPropagation(); closeCtx();
+      ui.selFilter=el.dataset.cf;
+      setMsg('รูปแบบการเลือก: '+({all:'ทั้งหมด (Node + Member)',node:'เฉพาะ Node',member:'เฉพาะ Member'})[ui.selFilter]);
+    };
+  });
+  cm.querySelectorAll('[data-ca]').forEach(el=>{
+    el.onclick=ev2=>{
+      ev2.stopPropagation(); closeCtx();
+      const a=el.dataset.ca;
+      if(a==='all')selectAll();
+      else if(a==='nodes'){ ui.selN=model.nodes.map(n=>n.id); ui.selM=[]; renderProps(); draw(); setMsg('เลือก Node ทั้งหมด '+ui.selN.length+' จุด'); }
+      else if(a==='members'){ ui.selM=model.members.map(m=>m.id); ui.selN=[]; renderProps(); draw(); setMsg('เลือก Member ทั้งหมด '+ui.selM.length+' ชิ้น'); }
+      else if(a==='supports'){ ui.selN=model.nodes.filter(n=>n.sup).map(n=>n.id); ui.selM=[]; renderProps(); draw(); setMsg('เลือก Node ที่มี Support '+ui.selN.length+' จุด'); }
+      else if(a==='desel'){ clearSel(); renderProps(); draw(); setMsg('ยกเลิกการเลือกแล้ว'); }
+    };
+  });
+}
+/* ============ EXPORT RESULTS TO EXCEL (.xls SpreadsheetML) — เลือกรายการได้ ============ */
+function xEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function xRow(cells,style){
+  return '<Row>'+cells.map(c=>{
+    const isN=(typeof c==='number'&&isFinite(c));
+    return '<Cell'+(style?' ss:StyleID="'+style+'"':'')+'><Data ss:Type="'+(isN?'Number':'String')+'">'+(isN?+c.toPrecision(10):xEsc(c))+'</Data></Cell>';
+  }).join('')+'</Row>';
+}
+function xSheet(name,blocks){
+  let x='<Worksheet ss:Name="'+xEsc(name)+'"><Table>';
+  for(const b of blocks){
+    if(!b)continue;
+    if(b.title)x+=xRow([b.title],'sT');
+    if(b.header)x+=xRow(b.header,'sH');
+    if(b.rows)for(const r of b.rows)x+=xRow(r);
+    x+=xRow(['']);
+  }
+  return x+'</Table></Worksheet>';
+}
+function sheetSafe(nm,used){
+  let s=String(nm).replace(/[\\\/\?\*\[\]:]/g,'-').slice(0,28)||'Sheet';
+  let b=s,i=2; while(used.has(s))s=b+'_'+(i++);
+  used.add(s); return s;
+}
+/* opts = {keys:[...], summary:true, parts:{disp,react,ends,max}} ; ไม่ส่ง = ส่งออกทั้งหมด */
+function exportExcel(opts){
+  if(!ui.resultsByCase) runAnalysis();
+  const by=ui.resultsByCase;
+  if(!by){ setMsg('ยังไม่มีผลวิเคราะห์ — ตรวจโมเดลแล้วกด ▶ วิเคราะห์ ก่อน',true); return; }
+  const u=U();
+  const allKeys=[...model.loadCases.map(c=>String(c.id)), ...(model.loadCombos||[]).map(c=>'C'+c.id),
+    ...ENV_KEYS.filter(k=>by[k]&&by[k].ok)];
+  const o=Object.assign({keys:allKeys, summary:true, parts:{disp:true,react:true,ends:true,max:true}}, opts||{});
+  const keys=o.keys.filter(k=>by[k]);
+  if(!keys.length&&!o.summary){ setMsg('ไม่ได้เลือกรายการส่งออกเลย',true); return; }
+  const used=new Set();
+  let ws='';
+  if(o.summary){
+    ws+=xSheet(sheetSafe('Summary',used),[
+      {title:'SA2D — สรุปผล ('+keys.length+' รายการที่เลือก)  (แรง: '+u.fname+' • โมเมนต์: '+u.mname+' • ระยะ: m)',
+       header:['ชื่อ','ชนิด','|N|max ('+u.fname+')','|V|max ('+u.fname+')','|M|max ('+u.mname+')','Δmax (mm)','สถานะ'],
+       rows:keys.map(k=>{ const R=by[k], tp=(k[0]==='E'?'Envelope':(k[0]==='C'?'Combination':'Load Case'));
+         return (R&&R.ok)?[caseName(k),tp,dF(R.gmax.N),dF(R.gmax.V),dM(R.gmax.M),R.gmax.D*1000,'OK']
+                         :[caseName(k),tp,'','','','',(R?R.msg:'—')]; })},
+      {title:'พิกัด Node', header:['Node','x (m)','y (m)','Support'],
+       rows:model.nodes.map(n=>['N'+n.id,n.x,n.y,n.sup?supName(n.sup):'—'])},
+      {title:'Member', header:['Member','Node I','Node J','ยาว (m)','หน้าตัด','ชนิด'],
+       rows:model.members.map(m=>{ const s=model.sections.find(x=>x.id===m.sec);
+         return ['M'+m.id,'N'+m.ni,'N'+m.nj,+memberLen(m).toFixed(4),s?s.name:'—',m.type]; })}
+    ]);
+  }
+  const mnP=(xs,arr)=>{ let bi=0; arr.forEach((v,i)=>{ if(v<arr[bi])bi=i; }); return {x:xs[bi],v:arr[bi]}; };
+  const mxP=(xs,arr)=>{ let bi=0; arr.forEach((v,i)=>{ if(v>arr[bi])bi=i; }); return {x:xs[bi],v:arr[bi]}; };
+  for(const k of keys){
+    const R=by[k]; if(!R||!R.ok)continue;
+    if(R.isEnv){
+      ws+=xSheet(sheetSafe(caseName(k),used),[
+        {title:caseName(k)+' — ห่อหุ้มจาก: '+R.keys.map(kk=>caseName(kk)).join(' + ')},
+        o.parts.disp?{title:'การเคลื่อนที่ของ Node (min/max)',
+         header:['Node','δx min (mm)','δx max (mm)','δy min (mm)','δy max (mm)'],
+         rows:R.nodesRes.map(n=>['N'+n.node,n.uxmin*1000,n.uxmax*1000,n.uymin*1000,n.uymax*1000])}:null,
+        o.parts.react?{title:'แรงปฏิกิริยา (min/max)',
+         header:['Node','Rx min','Rx max','Ry min','Ry max','Mz min','Mz max'],
+         rows:R.reactions.map(r=>['N'+r.node,dF(r.Rxmin),dF(r.Rxmax),dF(r.Rymin),dF(r.Rymax),dM(r.Mzmin),dM(r.Mzmax)])}:null,
+        (o.parts.ends||o.parts.max)?{title:'แรงภายใน Member (envelope)',
+         header:['Member','N min','ที่ x','N max','ที่ x','V min','ที่ x','V max','ที่ x','M min','ที่ x','M max','ที่ x'],
+         rows:R.memRes.map(m=>{ const a=mnP(m.xs,m.Nmin),b2=mxP(m.xs,m.Nmax),c2=mnP(m.xs,m.Vmin),d2=mxP(m.xs,m.Vmax),e2=mnP(m.xs,m.Mmin),f2=mxP(m.xs,m.Mmax);
+           return ['M'+m.id,dF(a.v),a.x,dF(b2.v),b2.x,dF(c2.v),c2.x,dF(d2.v),d2.x,dM(e2.v),e2.x,dM(f2.v),f2.x]; })}:null
+      ]);
+      continue;
+    }
+    ws+=xSheet(sheetSafe(caseName(k),used),[
+      o.parts.disp?{title:caseName(k)+' — การเคลื่อนที่ของ Node (Displacements)',
+       header:['Node','δx (mm)','δy (mm)','θz (rad)'],
+       rows:R.nodesRes.map(n=>['N'+n.node,n.ux*1000,n.uy*1000,n.rz])}:{title:caseName(k)},
+      o.parts.react?{title:'แรงปฏิกิริยา (Reactions)',
+       header:['Node','ชนิด','Rx ('+u.fname+')','Ry ('+u.fname+')','Mz ('+u.mname+')'],
+       rows:R.reactions.map(r=>['N'+r.node,supName(r.sup),dF(r.Rx),dF(r.Ry),dM(r.Mz)])}:null,
+      o.parts.ends?{title:'แรงภายในปลาย Member (แกนท้องถิ่น)',
+       header:['Member','ปลาย','Axial ('+u.fname+')','Shear ('+u.fname+')','Moment ('+u.mname+')'],
+       rows:R.memRes.flatMap(m=>[
+         ['M'+m.id,'I (N'+m.ni+')',dF(m.fL[0]),dF(m.fL[1]),dM(m.fL[2])],
+         ['M'+m.id,'J (N'+m.nj+')',dF(m.fL[3]),dF(m.fL[4]),dM(m.fL[5])]])}:null,
+      o.parts.max?{title:'ค่าสูงสุดในแต่ละ Member',
+       header:['Member','Nmax ('+u.fname+')','ที่ x (m)','Vmax ('+u.fname+')','ที่ x (m)','Mmax ('+u.mname+')','ที่ x (m)'],
+       rows:R.memRes.map(m=>['M'+m.id,dF(m.maxN.v),m.maxN.x,dF(m.maxV.v),m.maxV.x,dM(m.maxM.v),m.maxM.x])}:null
+    ]);
+  }
+  if(!used.size){ setMsg('ไม่ได้เลือกรายการส่งออกเลย',true); return; }
+  const xml='<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>'+
+    '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'+
+    '<Styles>'+
+    '<Style ss:ID="sH"><Font ss:Bold="1"/><Interior ss:Color="#DCE6F1" ss:Pattern="Solid"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/></Borders></Style>'+
+    '<Style ss:ID="sT"><Font ss:Bold="1" ss:Size="12" ss:Color="#1F4E79"/></Style>'+
+    '</Styles>'+ws+'</Workbook>';
+  const blob=new Blob(['﻿'+xml],{type:'application/vnd.ms-excel'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='SA2D_ผลวิเคราะห์.xls';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },400);
+  setMsg('📊 ส่งออก Excel แล้ว: SA2D_ผลวิเคราะห์.xls ('+used.size+' แผ่นงาน)');
+}
+/* ---------- dialog เลือกรายการส่งออก ---------- */
+function openExportExcelDlg(){
+  if(!ui.resultsByCase) runAnalysis();
+  const by=ui.resultsByCase;
+  if(!by){ setMsg('ยังไม่มีผลวิเคราะห์ — ตรวจโมเดลแล้วกด ▶ วิเคราะห์ ก่อน',true); return; }
+  const item=(k,nm,pre)=>'<label style="display:flex;gap:6px;align-items:center;padding:1px 4px"><input type="checkbox" class="xlk" value="'+k+'" checked> '+pre+nm+
+    (by[k]&&by[k].ok?'':' <small style="color:#b3261e">(วิเคราะห์ไม่สำเร็จ)</small>')+'</label>';
+  let h='<div class="pnote">เลือกรายการ (1 แผ่นงานต่อ 1 รายการ) และเนื้อหาที่จะส่งออก</div>';
+  h+='<div class="prow" style="margin:4px 0"><button type="button" class="tbtn" id="xlAll">เลือกทั้งหมด</button><button type="button" class="tbtn" id="xlNone">ไม่เลือกเลย</button>'+
+     '<span style="flex:1"></span><label style="flex:0 0 auto"><input type="checkbox" id="xlSum" checked> แผ่นสรุป + ข้อมูลโมเดล</label></div>';
+  h+='<div style="font-weight:700;color:var(--acc);margin:4px 0 2px">Load Cases</div>'+model.loadCases.map(c=>item(String(c.id),c.name,'▤ ')).join('');
+  h+='<div style="font-weight:700;color:var(--acc);margin:8px 0 2px">Load Combinations</div>'+(model.loadCombos||[]).map(c=>item('C'+c.id,c.name,'⧉ ')).join('');
+  const envOk=ENV_KEYS.filter(k=>by[k]&&by[k].ok);
+  if(envOk.length) h+='<div style="font-weight:700;color:var(--acc);margin:8px 0 2px">Envelope</div>'+envOk.map(k=>item(k,envName(k),'⛶ ')).join('');
+  h+='<div class="msep" style="margin:8px 0"></div><div style="font-weight:700;color:var(--acc);margin:0 0 2px">เนื้อหาในแต่ละแผ่น</div>'+
+    '<label style="display:block;padding:1px 4px"><input type="checkbox" id="xlDisp" checked> การเคลื่อนที่ของ Node (Displacements)</label>'+
+    '<label style="display:block;padding:1px 4px"><input type="checkbox" id="xlReact" checked> แรงปฏิกิริยา (Reactions)</label>'+
+    '<label style="display:block;padding:1px 4px"><input type="checkbox" id="xlEnds" checked> แรงภายในปลาย Member</label>'+
+    '<label style="display:block;padding:1px 4px"><input type="checkbox" id="xlMax" checked> ค่าสูงสุดในแต่ละ Member (พร้อมตำแหน่ง)</label>';
+  dlg('📊 ส่งออกผลเป็น Excel — เลือกรายการ', h, ()=>{
+    const keys=[...document.querySelectorAll('#dlgBody .xlk:checked')].map(x=>x.value);
+    exportExcel({keys, summary:$('xlSum').checked,
+      parts:{disp:$('xlDisp').checked, react:$('xlReact').checked, ends:$('xlEnds').checked, max:$('xlMax').checked}});
+  });
+  $('xlAll').onclick=()=>document.querySelectorAll('#dlgBody .xlk').forEach(x=>x.checked=true);
+  $('xlNone').onclick=()=>document.querySelectorAll('#dlgBody .xlk').forEach(x=>x.checked=false);
+}
+/* ============ ENVELOPE LOAD COMBINATIONS (U / S / เลือกเอง) ============ */
+function envName(key){
+  if(key==='E:U')return 'Envelope U (กำลัง ข้อ 7)';
+  if(key==='E:S')return 'Envelope S (หน่วยแรงใช้งาน ข้อ 6)';
+  if(key==='E:C')return 'Envelope เลือกเอง ('+((model.envSel||[]).length)+' ชุด)';
+  return key;
+}
+function envGroupKeys(key){
+  if(key==='E:U')return (model.loadCombos||[]).filter(c=>/^U/i.test(c.name)).map(c=>'C'+c.id);
+  if(key==='E:S')return (model.loadCombos||[]).filter(c=>/^S/i.test(c.name)).map(c=>'C'+c.id);
+  return (model.envSel||[]).slice();
+}
+/* สร้างผล envelope: min/max รายจุดจากทุกชุดในกลุ่ม + ค่าวิกฤต (signed) สำหรับ diagram/probe เดิม */
+function envelopeResult(by,keys){
+  const use=keys.filter(k=>by[k]&&by[k].ok);
+  if(!use.length) return {ok:false, msg:'ไม่มีชุดรวมแรงในกลุ่มนี้ (หรือยังไม่ได้เลือก)'};
+  const b=by[use[0]];
+  const crit=(mx,mn)=>Math.abs(mx)>=Math.abs(mn)?mx:mn;
+  const ER={ok:true, isEnv:true, keys:use, autoFixed:0,
+    nodesRes:b.nodesRes.map(n=>({node:n.node, uxmin:1e99,uxmax:-1e99, uymin:1e99,uymax:-1e99, rzmin:1e99,rzmax:-1e99})),
+    reactions:b.reactions.map(r=>({node:r.node, sup:r.sup, Rxmin:1e99,Rxmax:-1e99, Rymin:1e99,Rymax:-1e99, Mzmin:1e99,Mzmax:-1e99})),
+    memRes:b.memRes.map(m=>({id:m.id, ni:m.ni, nj:m.nj, L:m.L, c:m.c, s:m.s, xs:m.xs.slice(),
+      Nmin:m.xs.map(()=>1e99), Nmax:m.xs.map(()=>-1e99),
+      Vmin:m.xs.map(()=>1e99), Vmax:m.xs.map(()=>-1e99),
+      Mmin:m.xs.map(()=>1e99), Mmax:m.xs.map(()=>-1e99),
+      dymin:m.xs.map(()=>1e99), dymax:m.xs.map(()=>-1e99),
+      dxc:m.xs.map(()=>0), fLmin:[1e99,1e99,1e99,1e99,1e99,1e99], fLmax:[-1e99,-1e99,-1e99,-1e99,-1e99,-1e99]})),
+    gmax:{N:0,V:0,M:0,D:0}};
+  for(const k of use){
+    const r=by[k];
+    ER.nodesRes.forEach((n,i)=>{ const s=r.nodesRes[i];
+      n.uxmin=Math.min(n.uxmin,s.ux); n.uxmax=Math.max(n.uxmax,s.ux);
+      n.uymin=Math.min(n.uymin,s.uy); n.uymax=Math.max(n.uymax,s.uy);
+      n.rzmin=Math.min(n.rzmin,s.rz); n.rzmax=Math.max(n.rzmax,s.rz); });
+    ER.reactions.forEach((x,i)=>{ const s=r.reactions[i];
+      x.Rxmin=Math.min(x.Rxmin,s.Rx); x.Rxmax=Math.max(x.Rxmax,s.Rx);
+      x.Rymin=Math.min(x.Rymin,s.Ry); x.Rymax=Math.max(x.Rymax,s.Ry);
+      x.Mzmin=Math.min(x.Mzmin,s.Mz); x.Mzmax=Math.max(x.Mzmax,s.Mz); });
+    ER.memRes.forEach((m,i)=>{ const s=r.memRes[i];
+      const n=Math.min(m.xs.length,s.xs.length);
+      for(let j=0;j<n;j++){
+        m.Nmin[j]=Math.min(m.Nmin[j],s.Ns[j]); m.Nmax[j]=Math.max(m.Nmax[j],s.Ns[j]);
+        m.Vmin[j]=Math.min(m.Vmin[j],s.Vs[j]); m.Vmax[j]=Math.max(m.Vmax[j],s.Vs[j]);
+        m.Mmin[j]=Math.min(m.Mmin[j],s.Ms[j]); m.Mmax[j]=Math.max(m.Mmax[j],s.Ms[j]);
+        m.dymin[j]=Math.min(m.dymin[j],s.dys[j]); m.dymax[j]=Math.max(m.dymax[j],s.dys[j]);
+        if(Math.abs(s.dxs[j])>Math.abs(m.dxc[j]))m.dxc[j]=s.dxs[j];
+      }
+      for(let j=0;j<6;j++){ m.fLmin[j]=Math.min(m.fLmin[j],s.fL[j]); m.fLmax[j]=Math.max(m.fLmax[j],s.fL[j]); }
+    });
+  }
+  /* compat arrays = ค่าวิกฤต (เครื่องหมายตามค่าที่ |มาก| กว่า) เพื่อให้ probe/detail/ตารางเดิมใช้ได้ */
+  const pk=(xs,arr)=>{ let bi=0; arr.forEach((v,i)=>{ if(Math.abs(v)>Math.abs(arr[bi]))bi=i; }); return {x:xs[bi], v:arr[bi]}; };
+  for(const m of ER.memRes){
+    m.Ns=m.Nmax.map((v,i)=>crit(v,m.Nmin[i]));
+    m.Vs=m.Vmax.map((v,i)=>crit(v,m.Vmin[i]));
+    m.Ms=m.Mmax.map((v,i)=>crit(v,m.Mmin[i]));
+    m.dys=m.dymax.map((v,i)=>crit(v,m.dymin[i]));
+    m.dxs=m.dxc;
+    m.fL=m.fLmax.map((v,i)=>crit(v,m.fLmin[i]));
+    m.maxN=pk(m.xs,m.Ns); m.maxV=pk(m.xs,m.Vs); m.maxM=pk(m.xs,m.Ms);
+    for(let j=0;j<m.xs.length;j++){
+      ER.gmax.N=Math.max(ER.gmax.N,Math.abs(m.Ns[j]));
+      ER.gmax.V=Math.max(ER.gmax.V,Math.abs(m.Vs[j]));
+      ER.gmax.M=Math.max(ER.gmax.M,Math.abs(m.Ms[j]));
+      ER.gmax.D=Math.max(ER.gmax.D,Math.abs(m.dys[j]),Math.abs(m.dxs[j]));
+    }
+  }
+  for(const n of ER.nodesRes){ n.ux=crit(n.uxmax,n.uxmin); n.uy=crit(n.uymax,n.uymin); n.rz=crit(n.rzmax,n.rzmin);
+    ER.gmax.D=Math.max(ER.gmax.D,Math.hypot(n.ux,n.uy)); }
+  for(const r of ER.reactions){ r.Rx=crit(r.Rxmax,r.Rxmin); r.Ry=crit(r.Rymax,r.Rymin); r.Mz=crit(r.Mzmax,r.Mzmin); }
+  return ER;
+}
+function computeEnvelopes(by){
+  for(const k of ENV_KEYS) by[k]=envelopeResult(by,envGroupKeys(k));
+}
+/* ---------- วาด envelope band (min↔max) บน canvas ---------- */
+function drawEnvDiagram(R,diag){
+  const g=R.gmax, col=C[diag], gm=g[diag]||1e-12;
+  const sc=48/Math.max(gm,1e-12);
+  const sign=diag==='M'?-1:1;
+  for(const mr of R.memRes){
+    const a=getNode(mr.ni), b=getNode(mr.nj); if(!a||!b)continue;
+    const [x1,y1]=W2S(a.x,a.y);
+    const sxv=-mr.s, syv=-mr.c;
+    const hi=mr[diag+'max'], lo=mr[diag+'min'];
+    const P=(i,v)=>{ const bx=x1+(mr.c*mr.xs[i])*ui.scale, by=y1-(mr.s*mr.xs[i])*ui.scale;
+      return [bx+sxv*sign*v*sc, by+syv*sign*v*sc]; };
+    /* band ระหว่าง max กับ min */
+    ctx.beginPath();
+    for(let i=0;i<mr.xs.length;i++){ const [px,py]=P(i,hi[i]); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+    for(let i=mr.xs.length-1;i>=0;i--){ const [px,py]=P(i,lo[i]); ctx.lineTo(px,py); }
+    ctx.closePath();
+    ctx.fillStyle=col+'2e'; ctx.fill();
+    /* เส้น max (ทึบ) และ min (ประ) */
+    ctx.strokeStyle=col; ctx.lineWidth=1.6;
+    ctx.beginPath();
+    for(let i=0;i<mr.xs.length;i++){ const [px,py]=P(i,hi[i]); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+    ctx.stroke();
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();
+    for(let i=0;i<mr.xs.length;i++){ const [px,py]=P(i,lo[i]); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+    ctx.stroke(); ctx.setLineDash([]);
+    /* เส้นแกน member */
+    const [x2,y2]=W2S(b.x,b.y);
+    ctx.strokeStyle='#8a8f9c55'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    /* ค่าสูงสุด/ต่ำสุดพร้อมเส้นบอกตำแหน่ง */
+    if(ui.show.extremes!==false){
+      let iMax=0,iMin=0;
+      hi.forEach((v,i)=>{ if(v>hi[iMax])iMax=i; });
+      lo.forEach((v,i)=>{ if(v<lo[iMin])iMin=i; });
+      const pts=[[iMax,hi[iMax],'max'],[iMin,lo[iMin],'min']];
+      for(const [ii,pv,tag] of pts){
+        if(Math.abs(pv)<Math.max(1e-9,gm*0.01))continue;
+        const bx=x1+(mr.c*mr.xs[ii])*ui.scale, by=y1-(mr.s*mr.xs[ii])*ui.scale;
+        const cxp=bx+sxv*sign*pv*sc, cyp=by+syv*sign*pv*sc;
+        ctx.strokeStyle='#8a8f9c'; ctx.setLineDash([3,3]); ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(cxp,cyp); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle=col; ctx.beginPath(); ctx.arc(cxp,cyp,2.6,0,7); ctx.fill();
+        label(cxp+4,cyp-4, tag+' '+fmt(diag==='M'?dM(pv):dF(pv)), col, 10.5, true);
+        label(cxp+4,cyp+9, 'x='+fmt(mr.xs[ii],2)+' m', '#555', 9.5);
+      }
+    }
+  }
+}
+/* ---------- ตารางผล envelope ---------- */
+function buildEnvTables(R){
+  const u=U();
+  let h='<div class="pnote" style="margin:4px 0 8px">ห่อหุ้มจาก: '+R.keys.map(k=>caseName(k)).join(' • ')+'</div>';
+  h+='<h2>การเคลื่อนที่ของ Node (min / max)</h2><table class="sheet"><tr><th>Node</th><th>δx min (mm)</th><th>δx max (mm)</th><th>δy min (mm)</th><th>δy max (mm)</th></tr>';
+  for(const n of R.nodesRes) h+='<tr><td>N'+n.node+'</td><td>'+fmt(n.uxmin*1000,3)+'</td><td>'+fmt(n.uxmax*1000,3)+'</td><td>'+fmt(n.uymin*1000,3)+'</td><td>'+fmt(n.uymax*1000,3)+'</td></tr>';
+  h+='</table>';
+  h+='<h2>แรงปฏิกิริยา (min / max)</h2><table class="sheet"><tr><th>Node</th><th>Rx min ('+u.fname+')</th><th>Rx max ('+u.fname+')</th><th>Ry min ('+u.fname+')</th><th>Ry max ('+u.fname+')</th><th>Mz min ('+u.mname+')</th><th>Mz max ('+u.mname+')</th></tr>';
+  for(const r of R.reactions)
+    h+='<tr><td>N'+r.node+'</td><td>'+fmt(dF(r.Rxmin))+'</td><td>'+fmt(dF(r.Rxmax))+'</td><td>'+fmt(dF(r.Rymin))+'</td><td>'+fmt(dF(r.Rymax))+'</td><td>'+fmt(dM(r.Mzmin))+'</td><td>'+fmt(dM(r.Mzmax))+'</td></tr>';
+  h+='</table>';
+  h+='<h2>แรงภายใน Member (envelope min / max พร้อมตำแหน่ง)</h2>';
+  h+='<table class="sheet"><tr><th rowspan="2">Member</th><th colspan="4">Axial ('+u.fname+')</th><th colspan="4">Shear ('+u.fname+')</th><th colspan="4">Moment ('+u.mname+')</th></tr>'+
+     '<tr><th>min</th><th>x</th><th>max</th><th>x</th><th>min</th><th>x</th><th>max</th><th>x</th><th>min</th><th>x</th><th>max</th><th>x</th></tr>';
+  const mn=(xs,arr)=>{ let bi=0; arr.forEach((v,i)=>{ if(v<arr[bi])bi=i; }); return {x:xs[bi],v:arr[bi]}; };
+  const mx=(xs,arr)=>{ let bi=0; arr.forEach((v,i)=>{ if(v>arr[bi])bi=i; }); return {x:xs[bi],v:arr[bi]}; };
+  for(const m of R.memRes){
+    const nn=mn(m.xs,m.Nmin), nx=mx(m.xs,m.Nmax), vn=mn(m.xs,m.Vmin), vx=mx(m.xs,m.Vmax), mmn=mn(m.xs,m.Mmin), mmx=mx(m.xs,m.Mmax);
+    h+='<tr><td>M'+m.id+'</td>'+
+      '<td>'+fmt(dF(nn.v))+'</td><td>'+fmt(nn.x,2)+'</td><td>'+fmt(dF(nx.v))+'</td><td>'+fmt(nx.x,2)+'</td>'+
+      '<td>'+fmt(dF(vn.v))+'</td><td>'+fmt(vn.x,2)+'</td><td>'+fmt(dF(vx.v))+'</td><td>'+fmt(vx.x,2)+'</td>'+
+      '<td>'+fmt(dM(mmn.v))+'</td><td>'+fmt(mmn.x,2)+'</td><td>'+fmt(dM(mmx.v))+'</td><td>'+fmt(mmx.x,2)+'</td></tr>';
+  }
+  h+='</table>';
+  h+='<h2>การแอ่นตัว δy (min / max ต่อ Member)</h2><table class="sheet"><tr><th>Member</th><th>δy min (mm)</th><th>ที่ x (m)</th><th>δy max (mm)</th><th>ที่ x (m)</th></tr>';
+  for(const m of R.memRes){
+    const dn=mn(m.xs,m.dymin), dx2=mx(m.xs,m.dymax);
+    h+='<tr><td>M'+m.id+'</td><td>'+fmt(dn.v*1000,3)+'</td><td>'+fmt(dn.x,2)+'</td><td>'+fmt(dx2.v*1000,3)+'</td><td>'+fmt(dx2.x,2)+'</td></tr>';
+  }
+  h+='</table>';
+  return h;
+}
+/* ---------- dialog เลือกชุดสำหรับ Envelope เลือกเอง ---------- */
+function openEnvDlg(){
+  const sel=new Set(model.envSel||[]);
+  const item=(k,nm)=>'<label style="display:flex;gap:6px;align-items:center;padding:2px 4px"><input type="checkbox" class="envck" value="'+k+'"'+(sel.has(k)?' checked':'')+'> '+nm+'</label>';
+  let h='<div class="pnote">เลือก Load Case / Combination ที่จะนำมาหาค่า envelope (min/max รายจุด) — ผลจะอยู่ในรายการผลชื่อ <b>Envelope เลือกเอง</b></div>';
+  h+='<div style="font-weight:700;color:var(--acc);margin:6px 0 2px">Load Cases</div>'+model.loadCases.map(c=>item(String(c.id),'▤ '+c.name)).join('');
+  h+='<div style="font-weight:700;color:var(--acc);margin:8px 0 2px">Load Combinations</div>'+(model.loadCombos||[]).map(c=>item('C'+c.id,'⧉ '+c.name+' <small style="color:var(--dim)">'+comboDesc(c)+'</small>')).join('');
+  h+='<div class="prow" style="margin-top:8px"><button type="button" class="tbtn" id="envAll">เลือกทั้งหมด</button><button type="button" class="tbtn" id="envNone">ไม่เลือกเลย</button></div>';
+  dlg('⛶ Envelope เลือกเอง — เลือกชุดรวมแรง', h, ()=>{
+    pushUndo();
+    model.envSel=[...document.querySelectorAll('#dlgBody .envck:checked')].map(x=>x.value);
+    if(ui.resultsByCase){ computeEnvelopes(ui.resultsByCase); if(String(ui.lc)==='E:C'){ const r=ui.resultsByCase['E:C']; ui.results=(r&&r.ok)?r:null; } }
+    renderAll();
+    setMsg('Envelope เลือกเอง: '+model.envSel.length+' ชุด — เลือกดูได้ที่ช่อง Load Case ▸ Envelope');
+  });
+  $('envAll').onclick=()=>document.querySelectorAll('#dlgBody .envck').forEach(x=>x.checked=true);
+  $('envNone').onclick=()=>document.querySelectorAll('#dlgBody .envck').forEach(x=>x.checked=false);
+}
+/* ============ แสดงแรงกระทำ (Loads) ของ case ที่เลือก ในหน้ารายละเอียด Member / Node ============ */
+function loadDesc(l){
+  const u=U();
+  const w=v=>fmt(dW(v))+' '+u.wname, F=v=>fmt(dF(v))+' '+u.fname;
+  if(l.kind==='udl') return 'แรงแผ่เต็มความยาว (UDL) w = '+w(l.val)+'  ['+l.dir+']';
+  if(l.kind==='pudl') return 'แรงแผ่ช่วง x = '+fmt(l.a,2)+' → '+fmt(l.a2!==undefined?l.a2:0,2)+' m,  w = '+w(l.val)+'  ['+l.dir+']';
+  if(l.kind==='trap') return 'แรงแผ่ w1 → w2 = '+w(l.val)+' → '+w(l.val2!==undefined?l.val2:l.val)+'  ['+l.dir+']';
+  return 'แรงจุด P = '+F(l.val)+' ที่ x = '+fmt(l.a||0,2)+' m  ['+l.dir+']';
+}
+function memberLoadsHtml(mid,key){
+  const m=getMember(mid); if(!m)return '';
+  const base=model.loadCases[0].id;
+  const rowsFor=lc=>model.memberLoads.filter(l=>l.member===mid&&(l.lc||base)===lc);
+  const nodeRowsFor=lc=>model.nodeLoads.filter(l=>(l.node===m.ni||l.node===m.nj)&&(l.lc||base)===lc);
+  let items=[];
+  if(typeof key==='string'&&key[0]==='E'){
+    const R=ui.resultsByCase&&ui.resultsByCase[key];
+    return '<div style="font:600 12px Segoe UI;color:var(--acc);margin-top:6px">🏋 แรงกระทำ — Envelope</div>'+
+      '<div class="pnote">ผลนี้เป็นค่าห่อหุ้ม (min/max) จาก: '+((R&&R.keys)?R.keys.map(k=>caseName(k)).join(' • '):'-')+
+      ' — เลือกดู case/combination เดี่ยวจากช่อง "ดูผลของ" เพื่อดูรายการแรงของแต่ละชุด</div>';
+  }
+  if(typeof key==='string'&&key[0]==='C'){
+    const cb=(model.loadCombos||[]).find(c=>'C'+c.id===key);
+    if(cb) for(const cid in (cb.factors||{})){ const f=+cb.factors[cid]; if(f) items.push({lc:+cid, label:caseName(cid)+'  (×'+f+')'}); }
+  } else items.push({lc:+key, label:caseName(String(key))});
+  let rows='', cnt=0;
+  for(const it of items){
+    for(const l of rowsFor(it.lc)){ cnt++;
+      rows+='<tr><td class="l">'+it.label+'</td><td class="l">บน Member</td><td class="l">'+loadDesc(l)+'</td><td class="l">'+(l.note||'')+'</td></tr>'; }
+    for(const l of nodeRowsFor(it.lc)){ cnt++;
+      const u=U();
+      rows+='<tr><td class="l">'+it.label+'</td><td class="l">ที่ Node N'+l.node+'</td><td class="l">Fx='+fmt(dF(l.fx))+', Fy='+fmt(dF(l.fy))+' '+u.fname+', Mz='+fmt(dM(l.mz))+' '+u.mname+'</td><td class="l">'+(l.note||'')+'</td></tr>'; }
+    if(model.selfWeight&&items.length&&model.swCase===it.lc){ cnt++;
+      rows+='<tr><td class="l">'+it.label+'</td><td class="l">บน Member</td><td class="l">น้ำหนักตัวเอง (คำนวณอัตโนมัติจากหน้าตัด×วัสดุ)</td><td class="l">auto</td></tr>'; }
+  }
+  let h='<div style="font:600 12px Segoe UI;color:var(--acc);margin-top:6px">🏋 แรงกระทำของ '+caseName(String(key))+' (บน Member นี้ / ปลาย Node)</div>';
+  if(!cnt) return h+'<div class="pnote">— ไม่มีแรงกระทำโดยตรงบน Member/ปลาย Node ใน case นี้ (อาจรับแรงถ่ายผ่านโครงสร้าง) —</div>';
+  return h+'<table class="sheet"><tr><th>Load Case</th><th>ตำแหน่ง</th><th>รายละเอียดแรง</th><th>Note</th></tr>'+rows+'</table>';
+}
+function renderMemberLoadsPanel(){
+  const el=document.getElementById('dLoads'); if(!el)return;
+  el.innerHTML=memberLoadsHtml(detailSt.mid, detailSt.lc);
+}
+function nodeLoadsHtml(nid){
+  const base=model.loadCases[0].id;
+  const lds=model.nodeLoads.filter(l=>l.node===nid);
+  const u=U();
+  let h='<div style="font:600 12px Segoe UI;color:var(--acc);margin-top:8px">🏋 แรงกระทำที่ Node นี้ (ตาม Load Case)</div>';
+  if(!lds.length) return h+'<div class="pnote">— ไม่มีแรงกระทำโดยตรงที่ Node นี้ —</div>';
+  h+='<table class="sheet"><tr><th>Load Case</th><th>Fx ('+u.fname+')</th><th>Fy ('+u.fname+')</th><th>Mz ('+u.mname+')</th><th>Note</th></tr>';
+  for(const l of lds)
+    h+='<tr><td class="l">'+caseName(String(l.lc||base))+'</td><td>'+fmt(dF(l.fx))+'</td><td>'+fmt(dF(l.fy))+'</td><td>'+fmt(dM(l.mz))+'</td><td class="l">'+(l.note||'')+'</td></tr>';
+  return h+'</table>';
+}
+/* ============ MULTI-PLOT (Moment/Shear/Axial/δ พร้อมกัน แยกรูป/รวมรูป) + IMPORT DXF ============ */
+function pmState(){
+  if(!ui.plotMulti) ui.plotMulti={on:false, mode:'split', items:{M:true,V:true,N:false,defl:false}};
+  return ui.plotMulti;
+}
+const PM_COL={M:'#d02020',V:'#0a8a3a',N:'#1e62d0',defl:'#f08000'};
+const PM_TTL={M:'Moment (M)',V:'Shear (V)',N:'Axial (N)',defl:'การแอ่นตัว (δ)'};
+function drawPlotMulti(){
+  const st=pmState();
+  const items=['M','V','N','defl'].filter(k=>st.items[k]);
+  const w=cv.clientWidth,h=cv.clientHeight;
+  const save={scale:ui.scale,ox:ui.ox,oy:ui.oy,diag:ui.plot.diag,defl:ui.plot.defl};
+  ui._pmBusy=true;
+  try{
+    if(!items.length){ draw(); return; }
+    if(st.mode==='overlay'){
+      /* รวมในรูปเดียว: วาดโครง+ค่าแรก แล้วซ้อน diagram ที่เหลือ */
+      const forces=items.filter(k=>k!=='defl');
+      ui.plot.defl=items.includes('defl');
+      ui.plot.diag=forces[0]||'none';
+      draw();
+      for(let i=1;i<forces.length;i++){ ui.plot.diag=forces[i]; drawResults(); }
+      /* legend */
+      let lx=12,ly=h-14;
+      ctx.font='700 12px Segoe UI';
+      for(const it of items){
+        ctx.fillStyle=PM_COL[it];
+        ctx.fillText('■ '+PM_TTL[it],lx,ly);
+        lx+=ctx.measureText('■ '+PM_TTL[it]).width+18;
+      }
+    } else {
+      /* แยกหลายรูป (grid) */
+      const n=items.length;
+      const cols=n===1?1:2, rows=Math.ceil(n/cols);
+      let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
+      model.nodes.forEach(nd=>{x0=Math.min(x0,nd.x);x1=Math.max(x1,nd.x);y0=Math.min(y0,nd.y);y1=Math.max(y1,nd.y);});
+      if(x0>x1){x0=0;x1=1;y0=0;y1=1;}
+      ctx.clearRect(0,0,w,h); ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+      items.forEach((it,i)=>{
+        const cw=w/cols, ch=h/rows;
+        const cx0=(i%cols)*cw, cy0=Math.floor(i/cols)*ch;
+        ctx.save(); ctx.beginPath(); ctx.rect(cx0,cy0,cw,ch); ctx.clip();
+        const dx=Math.max(x1-x0,1),dy=Math.max(y1-y0,1);
+        ui.scale=Math.max(4,Math.min((cw-120)/dx,(ch-105)/dy,400));
+        ui.ox=cx0+(cw-(x0+x1)*ui.scale)/2;
+        ui.oy=cy0+(ch+(y0+y1)*ui.scale)/2;
+        ui.plot.diag=(it==='defl')?'none':it;
+        ui.plot.defl=(it==='defl');
+        draw();
+        ctx.restore();
+        ctx.strokeStyle='#b9bfcc'; ctx.lineWidth=1;
+        ctx.strokeRect(cx0+0.5,cy0+0.5,cw-1,ch-1);
+        ctx.fillStyle=PM_COL[it]; ctx.font='700 12.5px Segoe UI';
+        ctx.fillText(PM_TTL[it]+' — '+caseName(String(ui.lc)), cx0+9, cy0+17);
+      });
+    }
+  } finally {
+    ui.scale=save.scale; ui.ox=save.ox; ui.oy=save.oy;
+    ui.plot.diag=save.diag; ui.plot.defl=save.defl;
+    ui._pmBusy=false;
+  }
+}
+/* ---------- ปุ่ม + แผงเลือก ---------- */
+function renderPmPanel(){
+  const st=pmState();
+  const p=$('pmPanel'); if(!p)return;
+  const ck=(id,lb,c,col)=>'<label style="display:flex;gap:6px;align-items:center;padding:2px 4px;color:'+(col||'#222')+'"><input type="checkbox" id="'+id+'"'+(c?' checked':'')+'> '+lb+'</label>';
+  p.innerHTML=
+    '<div style="font:700 12px Segoe UI;color:var(--acc);margin-bottom:4px">แสดงผลหลายค่าพร้อมกัน</div>'+
+    ck('pmOn','เปิดโหมดหลายค่า (Multi-view)',st.on)+
+    '<div class="msep" style="margin:5px 0"></div>'+
+    '<label style="display:flex;gap:6px;padding:2px 4px"><input type="radio" name="pmMode" value="split"'+(st.mode==='split'?' checked':'')+'> 🗔 แยกหลายรูป (Split view)</label>'+
+    '<label style="display:flex;gap:6px;padding:2px 4px"><input type="radio" name="pmMode" value="overlay"'+(st.mode==='overlay'?' checked':'')+'> 🗗 รวมรูปเดียวกัน (ซ้อน)</label>'+
+    '<div class="msep" style="margin:5px 0"></div>'+
+    ck('pmM','Moment (M)',st.items.M,PM_COL.M)+
+    ck('pmV','Shear (V)',st.items.V,PM_COL.V)+
+    ck('pmN','Axial (N)',st.items.N,PM_COL.N)+
+    ck('pmD','การแอ่นตัว (δ)',st.items.defl,PM_COL.defl);
+  const upd=()=>{
+    st.on=$('pmOn').checked;
+    st.mode=document.querySelector('input[name=pmMode]:checked').value;
+    st.items.M=$('pmM').checked; st.items.V=$('pmV').checked;
+    st.items.N=$('pmN').checked; st.items.defl=$('pmD').checked;
+    $('pmBtn').classList.toggle('pmon',st.on);
+    draw();
+  };
+  p.querySelectorAll('input').forEach(el=>el.addEventListener('change',upd));
+}
+(function(){
+  const b=$('pmBtn');
+  if(b)b.onclick=e=>{
+    e.stopPropagation();
+    const p=$('pmPanel');
+    if(p.style.display==='none'||!p.style.display){ renderPmPanel(); p.style.display='block'; }
+    else p.style.display='none';
+  };
+  document.addEventListener('click',e=>{
+    const p=$('pmPanel');
+    if(p&&p.style.display==='block'&&!p.contains(e.target)&&e.target.id!=='pmBtn')p.style.display='none';
+  });
+})();
+
+/* ============ IMPORT DXF (LINE / LWPOLYLINE / POLYLINE) ============ */
+function importDXFText(txt,scale,secId){
+  const raw=txt.split(/\r\n|\r|\n/);
+  const pairs=[];
+  for(let i=0;i+1<raw.length;i+=2)pairs.push([raw[i].trim(),raw[i+1].trim()]);
+  const segs=[];
+  let cur=null, poly=null;
+  const flushLine=()=>{ if(cur&&isFinite(cur.x1)&&isFinite(cur.y1)&&isFinite(cur.x2)&&isFinite(cur.y2))segs.push([cur.x1,cur.y1,cur.x2,cur.y2]); cur=null; };
+  const flushPoly=()=>{
+    if(!poly)return;
+    const P=poly.pts.filter(p=>isFinite(p.x)&&isFinite(p.y));
+    for(let k=0;k+1<P.length;k++)segs.push([P[k].x,P[k].y,P[k+1].x,P[k+1].y]);
+    if(poly.closed&&P.length>2)segs.push([P[P.length-1].x,P[P.length-1].y,P[0].x,P[0].y]);
+    poly=null;
+  };
+  for(const [code,val] of pairs){
+    if(code==='0'){
+      flushLine();
+      if(val!=='VERTEX'&&val!=='SEQEND'&&poly&&!poly.lw)/* POLYLINE จบเมื่อ SEQEND */0;
+      if(poly&&poly.lw&&val!=='LWPOLYLINE')flushPoly();
+      if(val==='LINE')cur={};
+      else if(val==='LWPOLYLINE')poly={pts:[],closed:false,lw:true};
+      else if(val==='POLYLINE')poly={pts:[],closed:false,lw:false,hdr:true};
+      else if(val==='VERTEX'&&poly){ poly.hdr=false; poly.pts.push({}); }
+      else if(val==='SEQEND')flushPoly();
+    } else if(cur){
+      if(code==='10')cur.x1=+val; else if(code==='20')cur.y1=+val;
+      else if(code==='11')cur.x2=+val; else if(code==='21')cur.y2=+val;
+    } else if(poly){
+      if(poly.lw){
+        if(code==='10')poly.pts.push({x:+val});
+        else if(code==='20'&&poly.pts.length)poly.pts[poly.pts.length-1].y=+val;
+        else if(code==='70')poly.closed=(+val&1)===1;
+      } else {
+        if(poly.hdr){ if(code==='70')poly.closed=(+val&1)===1; }
+        else{
+          const v=poly.pts[poly.pts.length-1];
+          if(v){ if(code==='10')v.x=+val; else if(code==='20')v.y=+val; }
+        }
+      }
+    }
+  }
+  flushLine(); flushPoly();
+  if(!segs.length)return {n:0,m:0};
+  pushUndo();
+  const sec=secId||model.sections[0].id;
+  let nm0=model.members.length, nn0=model.nodes.length;
+  for(const [ax,ay,bx,by] of segs){
+    const x1=+(ax*scale).toFixed(6), y1=+(ay*scale).toFixed(6);
+    const x2=+(bx*scale).toFixed(6), y2=+(by*scale).toFixed(6);
+    if(Math.hypot(x2-x1,y2-y1)<1e-6)continue;
+    const a=findOrCreateNode(x1,y1), b=findOrCreateNode(x2,y2);
+    if(a.id===b.id)continue;
+    if(!model.members.some(m=>(m.ni===a.id&&m.nj===b.id)||(m.ni===b.id&&m.nj===a.id)))
+      model.members.push({id:model.nm++,ni:a.id,nj:b.id,sec,type:'frame',relI:false,relJ:false});
+  }
+  return {n:model.nodes.length-nn0, m:model.members.length-nm0, segs:segs.length};
+}
+function openImportDXFDlg(){
+  dlg('⤵ นำเข้าไฟล์ DXF (Insert)',
+    '<div class="prow"><label>ไฟล์ .dxf</label><input type="file" id="dxFile" accept=".dxf,.DXF" style="flex:1"></div>'+
+    '<div class="prow"><label>หน่วยในไฟล์ DXF</label><select id="dxUnit">'+
+      '<option value="0.001">mm (1 หน่วย = 1 มม.)</option>'+
+      '<option value="0.01">cm (1 หน่วย = 1 ซม.)</option>'+
+      '<option value="1" selected>m (1 หน่วย = 1 ม.)</option>'+
+    '</select></div>'+
+    '<div class="prow"><label>หน้าตัดเริ่มต้น</label><select id="dxSec">'+model.sections.map(s=>'<option value="'+s.id+'">'+s.name+'</option>').join('')+'</select></div>'+
+    '<div class="prow"><input type="checkbox" id="dxClear"><label style="flex:1">ล้างโมเดลเดิมก่อนนำเข้า</label></div>'+
+    '<div class="pnote">อ่าน LINE / LWPOLYLINE / POLYLINE จากไฟล์ DXF (ASCII R12 ขึ้นไป) → สร้าง Node + Member อัตโนมัติ (จุดซ้ำรวมเป็นจุดเดียว)<br>นำเข้าแล้วกำหนด Support / หน้าตัด / แรง แล้วกด ▶ วิเคราะห์</div>',
+    ()=>{
+      const f=$('dxFile').files&&$('dxFile').files[0];
+      if(!f){ setMsg('ยังไม่ได้เลือกไฟล์ .dxf',true); return false; }
+      const sc=+$('dxUnit').value, sec=+$('dxSec').value, clr=$('dxClear').checked;
+      const rd=new FileReader();
+      rd.onload=()=>{
+        try{
+          if(clr){ pushUndo(); wizReset(); }
+          const r=importDXFText(String(rd.result),sc,sec);
+          if(!r.segs){ setMsg('ไม่พบเส้น (LINE/POLYLINE) ในไฟล์ DXF นี้',true); return; }
+          invalidate(); renderAll(); fitView();
+          setMsg('⤵ นำเข้า DXF แล้ว: '+r.segs+' เส้น → เพิ่ม '+r.n+' Node, '+r.m+' Member — กำหนด support/แรง แล้ววิเคราะห์ได้เลย');
+        }catch(err){ setMsg('อ่านไฟล์ DXF ไม่สำเร็จ: '+err.message,true); }
+      };
+      rd.readAsText(f);
+    });
 }
 </script>
 </body>
