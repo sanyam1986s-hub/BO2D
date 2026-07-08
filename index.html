@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1e62d0">
+<meta name="description" content="SA2D — โปรแกรมวิเคราะห์โครงสร้าง 2 มิติ (Direct Stiffness Method) วัสดุมาตรฐานไทย มอก./วสท. ใช้งานออนไลน์/ออฟไลน์ได้ทุกที่">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SA2D">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>SA2D — โปรแกรมวิเคราะห์โครงสร้าง 2D (สไตล์ Multiframe)</title>
 <style>
 :root{
@@ -6925,6 +6934,36 @@ function drawSecLegend(){
     });
   };
   /* ให้เมนู/ปุ่มที่เรียกผ่าน window ใช้ตัวใหม่ */
+})();
+</script>
+<script>
+/* ===== PWA: service worker + ปุ่มติดตั้งแอป (ทำงานออนไลน์/ออฟไลน์ ใช้ได้ทุกที่) ===== */
+(function(){
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').catch(function(e){ console.warn('SW register failed', e); });
+    });
+  }
+  var deferred=null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferred=e; showInstall();
+  });
+  function showInstall(){
+    if(document.getElementById('pwaInstallBtn')) return;
+    var b=document.createElement('button');
+    b.id='pwaInstallBtn';
+    b.textContent='⬇ ติดตั้งแอป SA2D';
+    b.style.cssText='position:fixed;right:14px;bottom:14px;z-index:99999;padding:9px 15px;background:linear-gradient(#3f7fe0,#1e62d0);color:#fff;border:1px solid #174ea3;border-radius:8px;font:600 13px "Segoe UI",Tahoma,sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.28)';
+    b.onclick=async function(){
+      if(!deferred) return;
+      deferred.prompt();
+      try{ await deferred.userChoice; }catch(e){}
+      deferred=null; b.remove();
+    };
+    document.body.appendChild(b);
+    setTimeout(function(){ if(document.getElementById('pwaInstallBtn')) b.style.opacity='0.55'; }, 12000);
+  }
+  window.addEventListener('appinstalled', function(){ var b=document.getElementById('pwaInstallBtn'); if(b)b.remove(); });
 })();
 </script>
 </body>
