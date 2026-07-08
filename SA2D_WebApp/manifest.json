@@ -1,0 +1,17 @@
+{
+  "name": "SA2D — โปรแกรมวิเคราะห์โครงสร้าง 2 มิติ",
+  "short_name": "SA2D",
+  "description": "โปรแกรมวิเคราะห์โครงสร้าง 2 มิติ (Direct Stiffness Method) วัสดุมาตรฐานไทย มอก./วสท. ทำงานออฟไลน์ได้",
+  "lang": "th",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e4e6ea",
+  "theme_color": "#1e62d0",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
